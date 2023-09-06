@@ -4,13 +4,13 @@ Welcome to Shellfans API documentation. This document provides information about
 
 ## Check Email
 
-- **Endpoint:** `/api/check_email/`
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_email/`
 - **HTTP Method:** POST
 - **Description:** This endpoint is used to check if an email address is already registered in the system.
 
 ### Request
 
-- **URL:** `/api/check_email/`
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_email/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
@@ -36,13 +36,13 @@ Welcome to Shellfans API documentation. This document provides information about
 
 ## Check Phone
 
-- **Endpoint:** `/api/check_phone/`
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_phone/`
 - **HTTP Method:** POST
 - **Description:** This endpoint is used to check if a phone number is already registered in the system and sends an SMS verification code.
 
 ### Request
 
-- **URL:** `/api/check_phone/`
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_phone/`
 - **Request Body:**
   ```json
   {
@@ -72,13 +72,13 @@ Welcome to Shellfans API documentation. This document provides information about
 
 ## Verify and Register User
 
-- **Endpoint:** `/api/verify_and_register_user/`
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/verify_and_register_user/`
 - **HTTP Method:** POST
 - **Description:** This endpoint is used to verify a user's identity with a verification code and register a new user in the system.
 
 ### Request
 
-- **URL:** `/api/verify_and_register_user/`
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/verify_and_register_user/`
 - **Request Body:**
   ```json
   {

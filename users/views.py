@@ -10,9 +10,12 @@ from django.contrib.auth.models import User
 from .models import User
 from django.utils import timezone
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 @api_view(['POST'])
 def check_email(request):
-    # 检查数据库中是否存在相同的邮箱
+    # 檢查email是否重複
     email = request.data.get('email')
     if User.objects.filter(email=email).exists():
         response_error_data = {
@@ -99,7 +102,6 @@ def check_phone(request):
 def verify_and_register_user(request):
     # 取post回来的數據
     data = request.data
-
     # 檢查email與手機號碼是否重複
     phone_number = data.get('phone_number')
     user = User.objects.filter(Q(email=data.get('email')) | Q(phone_number=phone_number)).first()
@@ -177,6 +179,79 @@ def verify_and_register_user(request):
         }
     }
     return Response(response_correct_data, status=status.HTTP_200_OK)
+
 @api_view(['GET'])
 def fb_example(request):
     return Response({"algorithm": "HMAC-SHA256","expires": 1291840400,"issued_at": 1291836800,"user_id": "218471"}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+def send_login_email(request):
+    email = request.data.get('email')
+    # 檢查email是否存在資料庫內
+    if User.objects.filter(email=email).exists():
+        # 生成隨機的6位數驗證碼
+        verification_code = str(random.randint(100000, 999999))
+        # 驗證碼的有效期 10 分鐘
+        expiration_time = datetime.now() + timedelta(minutes=10)
+        # 驗證碼存入cache中
+        cache.set(email, {'code': verification_code, 'expiration': expiration_time}, 600)
+        # 發送email
+        html_message = render_to_string('myapp/email_template.html', {'verification_code': verification_code})
+        subject = 'shellfans 登入驗證信'
+        from_email = 'hello@shell.fans'
+        recipient_list = [email]
+        try:
+            send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
+            response_correct_data = {
+                'result': True,
+                'message': 'Sending email successfully',
+                'data': {
+                    'code': status.HTTP_200_OK,
+                }
+            }
+            return Response(response_correct_data, status=status.HTTP_200_OK)
+        except Exception:
+            response_data = {
+                'result': False,
+                'message': 'Email server error',
+                'data': {
+                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                }
+            }
+            return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        response_error_data = {
+            'result': False,
+            'message': 'Email already exists',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+def test_email(request):
+    email = request.data.get('email')
+    verification_code = str(random.randint(100000, 999999))
+    # 發送email
+    html_message = render_to_string('myapp/email_template.html', {'verification_code': verification_code})
+    subject = 'shellfans 登入驗證信'
+    from_email = 'hello@shell.fans'
+    recipient_list = [email]
+    try:
+        send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
+        response_correct_data = {
+            'result': True,
+            'message': 'Sending email successfully',
+            'data': {
+                'code': status.HTTP_200_OK,
+            }
+        }
+        return Response(response_correct_data, status=status.HTTP_200_OK)
+    except Exception:
+        response_data = {
+            'result': False,
+            'message': 'Email server error',
+            'data': {
+                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
+        }
+        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
