@@ -57,7 +57,7 @@ def check_phone(request):
     sms_host = "api.e8d.tw"
     send_sms_url = f"https://{sms_host}/API21/HTTP/sendSMS.ashx"
     user_id = "sfrd"
-    password = "K4NM_UypMIP2"
+    password = "3nmWyb|iA5V2Ub"
     subject = "唄粉科技"
     content = f'你的簡訊驗證碼為: {verification_code}'
     mobile = phone_number
