@@ -46,7 +46,7 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Request Body:**
   ```json
   {
-    "phone_number": "1234567890"
+    "phone_number": "+88693960123"
   }
   
 ### Responses
@@ -84,7 +84,7 @@ Welcome to Shellfans API documentation. This document provides information about
   {
     "email": "user@example.com",
     "name": "jason",
-    "gender": "Male",
+    "gender": "0",
     "birthday": "1996-01-17",
     "phone_number": "1234567890",
     "verification_code": "123456"
