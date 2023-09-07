@@ -77,12 +77,14 @@ def check_phone(request):
         response = requests.post(send_sms_url, data=post_data)
         # 寄送簡訊的狀態
         response.raise_for_status()
+        cached_data = cache.get(phone_number)
         # 寄送簡訊成功
         response_correct_data = {
             'result': True,
             'message': 'Sending SMS successfully',
             'data': {
                 'code': status.HTTP_200_OK,
+                'data':cached_data
             }
         }
         return Response(response_correct_data, status=status.HTTP_200_OK)
