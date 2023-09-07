@@ -224,7 +224,7 @@ def send_login_email(request):
     else:
         response_error_data = {
             'result': False,
-            'message': 'Email already exists',
+            'message': 'Email does not exist',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
             }
@@ -232,9 +232,12 @@ def send_login_email(request):
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
 def check_login_email(request):
-    email = request.data.get('email')
-    # 從cach中拿取驗證碼
+    # 取post回来的數據
+    data = request.data
+    email = data.get('email')
+    # 從cached中獲得email
     cached_data = cache.get(email)
+
     if cached_data is None:
         response_error_data = {
             'result': False,
@@ -246,11 +249,11 @@ def check_login_email(request):
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
     cached_verification_code = cached_data.get('code')
-    #verification_code = data.get('verification_code')
+    verification_code = data.get('verification_code')
     cached_expiration = timezone.make_aware(cached_data.get('expiration'))
 
-    # 檢查驗證碼是否正確
-    if email != cached_verification_code:
+    # 檢查驗證碼是否正确
+    if verification_code != cached_verification_code:
         response_error_data = {
             'result': False,
             'message': 'Invalid verification code',
@@ -260,7 +263,7 @@ def check_login_email(request):
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
-    # 检查驗證碼是否過期
+    # 檢查驗證碼是否過期
     if cached_expiration < timezone.now():
         response_error_data = {
             'result': False,
@@ -271,7 +274,7 @@ def check_login_email(request):
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
-    # 註冊成功後刪除cache
+    # 登入成功後刪除cache
     cache.delete(email)
     response_correct_data = {
         'result': True,
