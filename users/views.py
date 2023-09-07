@@ -11,7 +11,6 @@ from .models import User
 from django.utils import timezone
 from django.db.models import Q
 from django.core.mail import send_mail
-from django.http import JsonResponse
 from django.template.loader import render_to_string
 @api_view(['POST'])
 def check_email(request):
@@ -84,7 +83,6 @@ def check_phone(request):
             'message': 'Sending SMS successfully',
             'data': {
                 'code': status.HTTP_200_OK,
-                'data':cached_data
             }
         }
         return Response(response_correct_data, status=status.HTTP_200_OK)
@@ -126,7 +124,6 @@ def verify_and_register_user(request):
             'message': 'Verification code not found or has expired',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
-                'cache':cached_data
             }
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
@@ -166,7 +163,7 @@ def verify_and_register_user(request):
         phone_number=phone_number,
         profile_picture='',
         level=0,
-        is_email_verified=True,
+        is_email_verified=False,
         is_phone_verified=True,
     )
     new_user.save()
@@ -193,9 +190,9 @@ def send_login_email(request):
         # 生成隨機的6位數驗證碼
         login_verification_code = str(random.randint(100000, 999999))
         # 驗證碼的有效期 10 分鐘
-        expiration_time = datetime.now() + timedelta(minutes=10)
+        login_expiration_time = datetime.now() + timedelta(minutes=10)
         # 驗證碼存入cache中
-        cache.set(email, {'code': login_verification_code, 'expiration': expiration_time}, 600)
+        cache.set(email, {'code': login_verification_code, 'expiration': login_expiration_time}, 600)
         # 發送email
         html_message = render_to_string('email_template.html', {'login_verification_code': login_verification_code})
         subject = 'shellfans 登入驗證信'
@@ -230,9 +227,10 @@ def send_login_email(request):
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
-def send_login_email(request):
+def check_login_email(request):
+    email = request.data.get('email')
     # 從cach中拿取驗證碼
-    cached_data = cache.get(phone_number)
+    cached_data = cache.get(email)
     if cached_data is None:
         response_error_data = {
             'result': False,
@@ -244,11 +242,11 @@ def send_login_email(request):
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
     cached_verification_code = cached_data.get('code')
-    verification_code = data.get('verification_code')
+    #verification_code = data.get('verification_code')
     cached_expiration = timezone.make_aware(cached_data.get('expiration'))
 
     # 檢查驗證碼是否正確
-    if verification_code != cached_verification_code:
+    if email != cached_verification_code:
         response_error_data = {
             'result': False,
             'message': 'Invalid verification code',
@@ -268,6 +266,17 @@ def send_login_email(request):
             }
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
+
+    # 註冊成功後刪除cache
+    cache.delete(email)
+    response_correct_data = {
+        'result': True,
+        'message': 'Successfully registered',
+        'data': {
+            'code': status.HTTP_200_OK,
+        }
+    }
+    return Response(response_correct_data, status=status.HTTP_200_OK)
 @api_view(['POST'])
 def test_email(request):
     email = request.data.get('email')

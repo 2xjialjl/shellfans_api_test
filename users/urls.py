@@ -8,5 +8,6 @@ urlpatterns = [
     path('check_phone/', views.check_phone, name='check_phone'),
     path('verify_register_user/', views.verify_and_register_user, name='verify_and_register_user'),
     path('fb_example/',views.fb_example,name='fb_example'),
-    path('test_email/',views.test_email,name='test_email')
+    path('send_login_email/',views.test_email,name='test_email'),
+    path('check_login_email/',views.check_login_email,name='check_login_email')
 ]
