@@ -208,7 +208,7 @@ def send_login_email(request):
                 'message': 'Sending email successfully',
                 'data': {
                     'code': status.HTTP_200_OK,
-                    'data123':login_verification_code
+                    'data':login_verification_code
                 }
             }
             return Response(response_correct_data, status=status.HTTP_200_OK)
