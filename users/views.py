@@ -117,9 +117,7 @@ def verify_and_register_user(request):
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
     # 從cach中拿取驗證碼
-    print('phone_number:'+str(phone_number))
     cached_data = cache.get(phone_number)
-    print(cached_data)
     if cached_data is None:
         response_error_data = {
             'result': False,
