@@ -97,15 +97,15 @@ EMAIL_USE_TLS = True  # 使用TLS加密
 EMAIL_HOST_USER = 'hello@shell.fans'
 EMAIL_HOST_PASSWORD = 'T6u65lS@yU-SOA65'
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis-server:6379/1',  # Redis 伺服器位置
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://redis-server:6379/1',  # Redis 伺服器位置
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
 
 REGION = 'asia-east1'
 
