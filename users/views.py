@@ -197,7 +197,7 @@ def send_login_email(request):
         email = request.data.get('email')
         verification_code = str(random.randint(100000, 999999))
         # 發送email
-        html_message = render_to_string('email_template.html', {'login_verification_code': verification_code})
+        html_message = render_to_string('email_template.html', {'login_verification_code': login_verification_code})
         subject = 'shellfans 登入驗證信'
         from_email = 'hello@shell.fans'
         recipient_list = [email]
