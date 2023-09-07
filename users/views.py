@@ -278,37 +278,9 @@ def check_login_email(request):
     cache.delete(email)
     response_correct_data = {
         'result': True,
-        'message': 'Successfully registered',
+        'message': 'Successfully login',
         'data': {
             'code': status.HTTP_200_OK,
         }
     }
     return Response(response_correct_data, status=status.HTTP_200_OK)
-@api_view(['POST'])
-def test_email(request):
-    email = request.data.get('email')
-    verification_code = str(random.randint(100000, 999999))
-    # 發送email
-    html_message = render_to_string('email_template.html', {'verification_code': verification_code})
-    subject = 'shellfans 登入驗證信'
-    from_email = 'hello@shell.fans'
-    recipient_list = [email]
-    try:
-        send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
-        response_correct_data = {
-            'result': True,
-            'message': 'Sending email successfully',
-            'data': {
-                'code': status.HTTP_200_OK,
-            }
-        }
-        return Response(response_correct_data, status=status.HTTP_200_OK)
-    except Exception:
-        response_data = {
-            'result': False,
-            'message': 'Email server error',
-            'data': {
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-            }
-        }
-        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
