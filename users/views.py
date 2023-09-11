@@ -15,7 +15,6 @@ from django.template.loader import render_to_string
 def convert_country_code(phone_number,country_code):
     # 定義一個dictory來處理轉換
     country_code_mapping = {
-        '': '',
         'ZH': '+886',# 將ZH轉換為+886
         'JP': '+81'
     }
@@ -119,12 +118,13 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception:
+            except Exception as e:
                 response_data = {
                     'result': False,
                     'message': 'Email or Database server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        'error': e
                     }
                 }
                 return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
