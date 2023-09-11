@@ -12,53 +12,130 @@ from django.utils import timezone
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+def convert_country_code(phone_number,country_code):
+    # 定義一個dictory來處理轉換
+    country_code_mapping = {
+        'ZH': '+886',# 將ZH轉換為+886
+        'JP': '+81'
+    }
+    # 獲取轉換後的值，如果找不到則返回原始值
+    converted_code = country_code_mapping.get(country_code, country_code)
+    if converted_code.startswith('+886') and phone_number.startswith('0'):
+        phone_number = country_code + phone_number[1:]  # 去掉前面的 "0"
+
+    return phone_number
 @api_view(['POST'])
-def register_email(request):
-    # 檢查email是否重複
+def register_email_or_phone(request):
     email = request.data.get('email')
-    if not User.objects.filter(email=email).exists():
-        # 生成隨機的6位數驗證碼
-        verification_code = str(random.randint(100000, 999999))
-        # 當前時間
-        now = datetime.now()
-        # 當前時間+10分鐘
-        expiration_time = now + timedelta(minutes=10)
-        # 發送email
-        html_message = render_to_string('email_template.html', {'verification_code': verification_code})
-        subject = 'shellfans 登入驗證信'
-        from_email = 'hello@shell.fans'
-        recipient_list = [email]
-        try:
-            send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
-            # 存到db
-            verification_code_db = VerificationCode(user_code=email, code=verification_code, expiration_time=expiration_time)
-            verification_code_db.save()
-            response_correct_data = {
-                'result': True,
-                'message': 'Sending email successfully',
-                'data': {
-                    'code': status.HTTP_200_OK,
-                }
+    phone_number = request.data.get('phone_number')
+    country_code = request.data.get('country_code')
+    sent_phone_number = phone_number(phone_number,country_code)
+    if not email:
+        # 如果是手機號碼註冊,檢查手機號碼是否重複
+        if not User.objects.filter(phone=phone_number).exists():
+            # 生成隨機的6位數驗證碼
+            verification_code = str(random.randint(100000, 999999))
+            # 當前時間
+            now = datetime.now()
+            # 當前時間+10分鐘
+            expiration_time = now + timedelta(minutes=10)
+            # 發送簡訊驗證碼
+            sms_host = "api.e8d.tw"
+            send_sms_url = f"https://{sms_host}/API21/HTTP/sendSMS.ashx"
+            user_id = "sfrd"
+            password = "3nmWyb|iA5V2Ub"
+            subject = "唄粉科技"
+            content = f'你的簡訊驗證碼為: {verification_code}'
+            mobile = sent_phone_number
+
+            post_data = {
+                "UID": user_id,
+                "PWD": password,
+                "SB": subject,
+                "MSG": content,
+                "DEST": mobile,
             }
-            return Response(response_correct_data, status=status.HTTP_200_OK)
-        except Exception:
+            try:
+                # 寄送驗證碼
+                response = requests.post(send_sms_url, data=post_data)
+                # 存到db
+                verification_code_db = VerificationCode(user_code=phone_number,countyr_code=country_code, code=verification_code, expiration_time=expiration_time)
+                verification_code_db.save()
+                # 寄送簡訊的狀態
+                response.raise_for_status()
+                # 寄送簡訊成功
+                response_correct_data = {
+                    'result': True,
+                    'message': 'Sending SMS successfully',
+                    'data': {
+                        'code': status.HTTP_200_OK,
+                    }
+                }
+                return Response(response_correct_data, status=status.HTTP_200_OK)
+            except Exception:
+                # 寄送簡訊失敗
+                response_error_data = {
+                    'result': False,
+                    'message': 'Sending SMS error',
+                    'data': {
+                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    }
+                }
+                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if not phone_number:
             response_data = {
                 'result': False,
-                'message': 'Email or Database server error',
+                'message': 'Email and phone are both empty',
                 'data': {
-                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'code': status.HTTP_400_BAD_REQUEST,
                 }
             }
-            return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     else:
-        response_data = {
-            'result': False,
-            'message': 'Email or phone has be registered',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
+        # 檢查email是否重複
+        if not User.objects.filter(email=email).exists():
+            # 生成隨機的6位數驗證碼
+            verification_code = str(random.randint(100000, 999999))
+            # 當前時間
+            now = datetime.now()
+            # 當前時間+10分鐘
+            expiration_time = now + timedelta(minutes=10)
+            # 發送email
+            html_message = render_to_string('email_template.html', {'verification_code': verification_code})
+            subject = 'shellfans 登入驗證信'
+            from_email = 'hello@shell.fans'
+            recipient_list = [email]
+            try:
+                send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
+                # 存到db
+                verification_code_db = VerificationCode(user_code=email, code=verification_code, expiration_time=expiration_time)
+                verification_code_db.save()
+                response_correct_data = {
+                    'result': True,
+                    'message': 'Sending email successfully',
+                    'data': {
+                        'code': status.HTTP_200_OK,
+                    }
+                }
+                return Response(response_correct_data, status=status.HTTP_200_OK)
+            except Exception:
+                response_data = {
+                    'result': False,
+                    'message': 'Email or Database server error',
+                    'data': {
+                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            response_data = {
+                'result': False,
+                'message': 'Email or phone has be registered',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
             }
-        }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
 def check_phone(request):
     phone_number = request.data.get('phone_number')
