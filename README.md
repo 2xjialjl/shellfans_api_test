@@ -20,16 +20,16 @@ Welcome to Shellfans API documentation. This document provides information about
   }
 ### Responses
 - **Status Codes:
-200 OK: The email address does not exist in the system.**
+200 OK: Sending email successfully.**
     ```json
       {
-        "result":true,"message":"Email does not exist","data":{"code":200}
+        "result":true,"message":"Sending email successfully","data":{"code":200}
       }
      ```
-- **400 Bad Request: The email address already exists or there is another request error.**
+- **500 Bad Request: Email or Database server error.**
     ```json
       {
-        "result":true,"message":"Email already exists","data":{"code":400}
+        "result":true,"message":"Email or Database server error","data":{"code":500}
       }
     ```
 

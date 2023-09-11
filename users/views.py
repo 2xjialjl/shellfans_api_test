@@ -7,32 +7,50 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.cache import cache
 from django.contrib.auth.models import User
-from .models import User
+from .models import User, VerificationCode
 from django.utils import timezone
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 @api_view(['POST'])
-def check_email(request):
+def register_email(request):
     # 檢查email是否重複
     email = request.data.get('email')
-    if User.objects.filter(email=email).exists():
-        response_error_data = {
-            'result': False,
-            'message': 'Email already exists',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
+    if not User.objects.filter(email=email).exists():
+        # 生成隨機的6位數驗證碼
+        verification_code = str(random.randint(100000, 999999))
+        # 當前時間
+        now = datetime.now()
+
+        # 當前時間+10分鐘
+        expiration_time = now + timedelta(minutes=10)
+        # 發送email
+        html_message = render_to_string('email_template.html', {'verification_code': verification_code})
+        subject = 'shellfans 登入驗證信'
+        from_email = 'hello@shell.fans'
+        recipient_list = [email]
+        try:
+            send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
+            # 存到db
+            verification_code_db = VerificationCode(user_code=email, code=verification_code, expiration_time=expiration_time)
+            verification_code_db.save()
+            response_correct_data = {
+                'result': True,
+                'message': 'Sending email successfully',
+                'data': {
+                    'code': status.HTTP_200_OK,
+                }
             }
-        }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-    response_correct_data = {
-        'result': True,
-        'message': 'Email does not exist',
-        'data': {
-            'code': status.HTTP_200_OK,
-        }
-    }
-    return Response(response_correct_data, status=status.HTTP_200_OK)
+            return Response(response_correct_data, status=status.HTTP_200_OK)
+        except Exception:
+            response_data = {
+                'result': False,
+                'message': 'Email or Database server error',
+                'data': {
+                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                }
+            }
+
 
 @api_view(['POST'])
 def check_phone(request):
@@ -76,7 +94,6 @@ def check_phone(request):
         response = requests.post(send_sms_url, data=post_data)
         # 寄送簡訊的狀態
         response.raise_for_status()
-        cached_data = cache.get(phone_number)
         # 寄送簡訊成功
         response_correct_data = {
             'result': True,
@@ -86,7 +103,7 @@ def check_phone(request):
             }
         }
         return Response(response_correct_data, status=status.HTTP_200_OK)
-    except Exception as e:
+    except Exception:
         # 寄送簡訊失敗
         response_error_data = {
             'result': False,
