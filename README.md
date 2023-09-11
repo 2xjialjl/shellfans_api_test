@@ -19,11 +19,16 @@ Welcome to Shellfans API documentation. This document provides information about
     "email": "user@example.com"
   }
 ### Responses
-- **Status Codes:
-200 OK: Sending email successfully.**
+- **Status Codes:200 OK: Sending email successfully.**
     ```json
       {
         "result":true,"message":"Sending email successfully","data":{"code":200}
+      }
+     ```
+- **500 Bad Request: Email or phone has be registered.**
+    ```json
+      {
+        "result":true,"message":"Email or phone has be registered","data":{"code":400}
       }
      ```
 - **500 Bad Request: Email or Database server error.**

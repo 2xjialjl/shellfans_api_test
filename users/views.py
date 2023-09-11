@@ -21,7 +21,6 @@ def register_email(request):
         verification_code = str(random.randint(100000, 999999))
         # 當前時間
         now = datetime.now()
-
         # 當前時間+10分鐘
         expiration_time = now + timedelta(minutes=10)
         # 發送email
@@ -50,8 +49,16 @@ def register_email(request):
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
                 }
             }
-
-
+            return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        response_data = {
+            'result': False,
+            'message': 'Email or phone has be registered',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
 def check_phone(request):
     phone_number = request.data.get('phone_number')
