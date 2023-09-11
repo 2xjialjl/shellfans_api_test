@@ -30,7 +30,7 @@ def register_email_or_phone(request):
     email = request.data.get('email')
     phone_number = request.data.get('phone_number')
     country_code = request.data.get('country_code')
-    sent_phone_number = phone_number(phone_number,country_code)
+    sent_phone_number = convert_country_code(phone_number, country_code)
     if not email:
         # 如果是手機號碼註冊,檢查手機號碼是否重複
         if not User.objects.filter(phone=phone_number).exists():
