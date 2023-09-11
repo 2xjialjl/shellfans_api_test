@@ -124,7 +124,7 @@ def register_email_or_phone(request):
                     'message': 'Email or Database server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error': e
+                        'error': str(e)
                     }
                 }
                 return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
