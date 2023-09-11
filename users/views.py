@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 def convert_country_code(phone_number,country_code):
     # 定義一個dictory來處理轉換
     country_code_mapping = {
+        '': '',
         'ZH': '+886',# 將ZH轉換為+886
         'JP': '+81'
     }
