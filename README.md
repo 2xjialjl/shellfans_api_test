@@ -4,13 +4,13 @@ Welcome to Shellfans API documentation. This document provides information about
 
 ## register_email_or_phone
 
-- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_email_or_phone/`
+- **Endpoint:** `https://shellfans-api-test1-rr7tb4kqva-de.a.run.app/api/register_email_or_phone/`
 - **HTTP Method:** POST
 - **Description:** This endpoint is used to check if an email address is already registered in the system.
 
 ### Request
 
-- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_email_or_phone/`
+- **URL:** `https://shellfans-api-test1-rr7tb4kqva-de.a.run.app/api/register_email_or_phone/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
