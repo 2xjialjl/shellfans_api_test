@@ -72,15 +72,13 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception as e:
+            except Exception:
                 # 寄送簡訊失敗
                 response_error_data = {
                     'result': False,
-                    'message': 'Sending SMS error',
+                    'message': 'SMS server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error': str(e),
-                        'number': mobile
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -139,75 +137,80 @@ def register_email_or_phone(request):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
-def check_phone(request):
+def check_verification_code(request):
+    email = request.data.get('email')
     phone_number = request.data.get('phone_number')
-    # 檢查資料庫是否有相同資料
-    if User.objects.filter(phone_number=phone_number).exists():
-        response_error_data = {
-            'result': False,
-            'message': 'Phone Number already exists',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
+    code = request.data.get('verification_code')
+    if not email:
+        try:
+            verification_code_db = VerificationCode.objects.get(user_code=phone_number, code=code)
+        except VerificationCode.DoesNotExist:
+            # 驗證碼不存在,驗證失敗
+            response_data = {
+                'result': False,
+                'message': 'Invalid verification code',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
             }
-        }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-
-    # 生成隨機的6位數驗證碼
-    verification_code = str(random.randint(100000, 999999))
-
-    # 發送簡訊驗證碼
-    sms_host = "api.e8d.tw"
-    send_sms_url = f"https://{sms_host}/API21/HTTP/sendSMS.ashx"
-    user_id = "sfrd"
-    password = "3nmWyb|iA5V2Ub"
-    subject = "唄粉科技"
-    content = f'你的簡訊驗證碼為: {verification_code}'
-    mobile = phone_number
-
-    post_data = {
-        "UID": user_id,
-        "PWD": password,
-        "SB": subject,
-        "MSG": content,
-        "DEST": mobile,
-    }
-    try:
-        # 驗證碼的有效期 10 分鐘
-        expiration_time = datetime.now() + timedelta(minutes=10)
-        # 驗證碼存入cache中
-        cache.set(phone_number, {'code': verification_code, 'expiration': expiration_time}, 600)
-        # 寄送驗證碼
-        response = requests.post(send_sms_url, data=post_data)
-        # 寄送簡訊的狀態
-        response.raise_for_status()
-        # 寄送簡訊成功
-        response_correct_data = {
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        # 驗證碼是否過期
+        if verification_code_db.expiration_time < timezone.now():
+            response_data = {
+                'result': False,
+                'message': 'Verification code has expired',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        response_data = {
             'result': True,
-            'message': 'Sending SMS successfully',
+            'message': 'Verification code is valid',
             'data': {
                 'code': status.HTTP_200_OK,
             }
         }
-        return Response(response_correct_data, status=status.HTTP_200_OK)
-    except Exception:
-        # 寄送簡訊失敗
-        response_error_data = {
-            'result': False,
-            'message': 'Sending SMS error',
+        return Response(response_data, status=status.HTTP_200_OK)
+    else:
+        try:
+            verification_code_db = VerificationCode.objects.get(user_code=email, code=code)
+        except VerificationCode.DoesNotExist:
+            # 無email,驗證失敗
+            response_data = {
+                'result': False,
+                'message': 'Invalid email verification code',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        # 驗證碼是否過期
+        if verification_code_db.expiration_time < timezone.now():
+            response_data = {
+                'result': False,
+                'message': 'Email verification code has expired',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        response_data = {
+            'result': True,
+            'message': 'Verification code is valid',
             'data': {
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'code': status.HTTP_200_OK,
             }
         }
-        return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        return Response(response_data, status=status.HTTP_200_OK)
 @api_view(['POST'])
 def verify_and_register_user(request):
-    # 取post回来的數據
-    data = request.data
-    # 檢查email與手機號碼是否重複
-    phone_number = data.get('phone_number')
-    user = User.objects.filter(Q(email=data.get('email')) | Q(phone_number=phone_number)).first()
-
+    email = request.data.get('email')
+    phone_number = request.data.get('phone_number')
+    country_code = request.data.get('country_code')
+    user = User.objects.filter(Q(email=email) | Q(phone_number=phone_number)).first()
     if user:
         # 如果用user存在，返回錯誤
         response_error_data = {
@@ -219,21 +222,6 @@ def verify_and_register_user(request):
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
-    # 從cach中拿取驗證碼
-    cached_data = cache.get(phone_number)
-    if cached_data is None:
-        response_error_data = {
-            'result': False,
-            'message': 'Verification code not found or has expired',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-
-    cached_verification_code = cached_data.get('code')
-    verification_code = data.get('verification_code')
-    cached_expiration = timezone.make_aware(cached_data.get('expiration'))
 
     # 檢查驗證碼是否正確
     if verification_code != cached_verification_code:

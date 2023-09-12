@@ -4,13 +4,13 @@ Welcome to Shellfans API documentation. This document provides information about
 
 ## Check Email
 
-- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_email/`
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_email_or_phone/`
 - **HTTP Method:** POST
 - **Description:** This endpoint is used to check if an email address is already registered in the system.
 
 ### Request
 
-- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_email/`
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_email_or_phone/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
@@ -25,56 +25,18 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"Sending email successfully","data":{"code":200}
       }
      ```
-- **500 Bad Request: Email or phone has be registered.**
+- **400 Bad Request: Email and phone are both empty.**
     ```json
       {
-        "result":true,"message":"Email or phone has be registered","data":{"code":400}
+        "result":true,"message":"Email and phone are both empty","data":{"code":400}
       }
      ```
-- **500 Bad Request: Email or Database server error.**
+- **500 Bad Request: Email,Phone,Database server error.**
     ```json
       {
-        "result":true,"message":"Email or Database server error","data":{"code":500}
+        "result":true,"message":"SMS server error","data":{"code":500}
       }
     ```
-
-
-## Check Phone
-
-- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_phone/`
-- **HTTP Method:** POST
-- **Description:** This endpoint is used to check if a phone number is already registered in the system and sends an SMS verification code.
-
-### Request
-
-- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_phone/`
-- **Request Body:**
-  ```json
-  {
-    "phone_number": "+88693960123"
-  }
-  
-### Responses
-- **Status Codes:
-200 OK:  The phone number does not exist in the system, and the verification code has been sent.**
-    ```json
-      {
-        "result":true,"message":"Sending SMS successfully","data":{"code":200}
-      }
-     ```
-- **400 Bad Request: The phone number already exists**
-    ```json
-      {
-        "result":true,"message":"Phone Number already exists","data":{"code":400}
-      }
-    ```
-- **500 INTERNAL_SERVER_ERROR:  Failed to send the SMS or other server-related errors.**
-    ```json
-      {
-        "result":true,"message":"Sending SMS error","data":{"code":500}
-      }
-    ```
-
 ## Verify and Register User
 
 - **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/verify_register_user//`
