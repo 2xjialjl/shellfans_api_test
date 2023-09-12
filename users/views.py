@@ -72,13 +72,15 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception:
+            except Exception as e:
                 # 寄送簡訊失敗
                 response_error_data = {
                     'result': False,
                     'message': 'Sending SMS error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        'error': e,
+                        'number': mobile
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
