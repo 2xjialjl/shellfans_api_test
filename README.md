@@ -2,7 +2,7 @@
 
 Welcome to Shellfans API documentation. This document provides information about Shellfans API.
 
-## Check Email
+## register_email_or_phone
 
 - **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_email_or_phone/`
 - **HTTP Method:** POST
@@ -17,6 +17,8 @@ Welcome to Shellfans API documentation. This document provides information about
   ```json
   {
     "email": "user@example.com"
+    "phone_number": "09123456789"
+    "country_code" "ZH"
   }
 ### Responses
 - **Status Codes:200 OK: Sending email successfully.**
