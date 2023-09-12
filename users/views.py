@@ -15,7 +15,7 @@ from django.template.loader import render_to_string
 def convert_country_code(phone_number,country_code):
     # 定義一個dictory來處理轉換
     country_code_mapping = {
-        'ZH': '+886',# 將ZH轉換為+886
+        'TW': '+886',# 將ZH轉換為+886
         'JP': '+81'
     }
     # 獲取轉換後的值，如果找不到則返回原始值
@@ -136,91 +136,92 @@ def register_email_or_phone(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-@api_view(['POST'])
-def check_verification_code(request):
-    email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
-    code = request.data.get('verification_code')
-    if not email:
-        try:
-            verification_code_db = VerificationCode.objects.get(user_code=phone_number, code=code)
-        except VerificationCode.DoesNotExist:
-            # 驗證碼不存在,驗證失敗
-            response_data = {
-                'result': False,
-                'message': 'Invalid verification code',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        # 驗證碼是否過期
-        if verification_code_db.expiration_time < timezone.now():
-            response_data = {
-                'result': False,
-                'message': 'Verification code has expired',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        response_data = {
-            'result': True,
-            'message': 'Verification code is valid',
-            'data': {
-                'code': status.HTTP_200_OK,
-            }
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
-    else:
-        try:
-            verification_code_db = VerificationCode.objects.get(user_code=email, code=code)
-        except VerificationCode.DoesNotExist:
-            # 無email,驗證失敗
-            response_data = {
-                'result': False,
-                'message': 'Invalid email verification code',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# def check_verification_code(request):
+#     email = request.data.get('email')
+#     phone_number = request.data.get('phone_number')
+#     code = request.data.get('verification_code')
+#     if not email:
+#         try:
+#             verification_code_db = VerificationCode.objects.get(user_code=phone_number, code=code)
+#         except VerificationCode.DoesNotExist:
+#             # 驗證碼不存在,驗證失敗
+#             response_data = {
+#                 'result': False,
+#                 'message': 'Invalid verification code',
+#                 'data': {
+#                     'code': status.HTTP_400_BAD_REQUEST,
+#                 }
+#             }
+#             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+#         # 驗證碼是否過期
+#         if verification_code_db.expiration_time < timezone.now():
+#             response_data = {
+#                 'result': False,
+#                 'message': 'Verification code has expired',
+#                 'data': {
+#                     'code': status.HTTP_400_BAD_REQUEST,
+#                 }
+#             }
+#             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+#         response_data = {
+#             'result': True,
+#             'message': 'Verification code is valid',
+#             'data': {
+#                 'code': status.HTTP_200_OK,
+#             }
+#         }
+#         return Response(response_data, status=status.HTTP_200_OK)
+#     else:
+#         try:
+#             verification_code_db = VerificationCode.objects.get(user_code=email, code=code)
+#         except VerificationCode.DoesNotExist:
+#             # 無email,驗證失敗
+#             response_data = {
+#                 'result': False,
+#                 'message': 'Invalid email verification code',
+#                 'data': {
+#                     'code': status.HTTP_400_BAD_REQUEST,
+#                 }
+#             }
+#             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+#
+#         # 驗證碼是否過期
+#         if verification_code_db.expiration_time < timezone.now():
+#             response_data = {
+#                 'result': False,
+#                 'message': 'Email verification code has expired',
+#                 'data': {
+#                     'code': status.HTTP_400_BAD_REQUEST,
+#                 }
+#             }
+#             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+#
+#         response_data = {
+#             'result': True,
+#             'message': 'Verification code is valid',
+#             'data': {
+#                 'code': status.HTTP_200_OK,
+#             }
+#         }
+#         return Response(response_data, status=status.HTTP_200_OK)
 
-        # 驗證碼是否過期
-        if verification_code_db.expiration_time < timezone.now():
-            response_data = {
-                'result': False,
-                'message': 'Email verification code has expired',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-        response_data = {
-            'result': True,
-            'message': 'Verification code is valid',
-            'data': {
-                'code': status.HTTP_200_OK,
-            }
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
-@api_view(['POST'])
-def verify_and_register_user(request):
-    email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
-    country_code = request.data.get('country_code')
-    user = User.objects.filter(Q(email=email) | Q(phone_number=phone_number)).first()
-    if user:
-        # 如果用user存在，返回錯誤
-        response_error_data = {
-            'result': False,
-            'message': 'Email or Phone Number already exists',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# def verify_and_register_user(request):
+#     email = request.data.get('email')
+#     phone_number = request.data.get('phone_number')
+#     country_code = request.data.get('country_code')
+#     user = User.objects.filter(Q(email=email) | Q(phone_number=phone_number)).first()
+#     if user:
+#         # 如果用user存在，返回錯誤
+#         response_error_data = {
+#             'result': False,
+#             'message': 'Email or Phone Number already exists',
+#             'data': {
+#                 'code': status.HTTP_400_BAD_REQUEST,
+#             }
+#         }
+#         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
 
     # 檢查驗證碼是否正確

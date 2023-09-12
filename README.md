@@ -18,7 +18,7 @@ Welcome to Shellfans API documentation. This document provides information about
   {
     "email": "user@example.com"
     "phone_number": "09123456789"
-    "country_code" "ZH"
+    "country_code" "TW"
   }
 ### Responses
 - **Status Codes:200 OK: Sending email successfully.**
