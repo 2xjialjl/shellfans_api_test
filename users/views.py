@@ -224,40 +224,40 @@ def verify_and_register_user(request):
 
 
     # 檢查驗證碼是否正確
-    if verification_code != cached_verification_code:
-        response_error_data = {
-            'result': False,
-            'message': 'Invalid verification code',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-
-    # 检查驗證碼是否過期
-    if cached_expiration < timezone.now():
-        response_error_data = {
-            'result': False,
-            'message': 'Verification code has expired',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-
-    # 創建用戶
-    new_user = User(
-        email=data.get('email'),
-        name=data.get('name'),
-        gender=data.get('gender'),
-        birthday=data.get('birthday'),
-        phone_number=phone_number,
-        profile_picture='',
-        level=0,
-        is_email_verified=False,
-        is_phone_verified=True,
-    )
-    new_user.save()
+    # if verification_code != cached_verification_code:
+    #     response_error_data = {
+    #         'result': False,
+    #         'message': 'Invalid verification code',
+    #         'data': {
+    #             'code': status.HTTP_400_BAD_REQUEST,
+    #         }
+    #     }
+    #     return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # # 检查驗證碼是否過期
+    # if cached_expiration < timezone.now():
+    #     response_error_data = {
+    #         'result': False,
+    #         'message': 'Verification code has expired',
+    #         'data': {
+    #             'code': status.HTTP_400_BAD_REQUEST,
+    #         }
+    #     }
+    #     return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # # 創建用戶
+    # new_user = User(
+    #     email=data.get('email'),
+    #     name=data.get('name'),
+    #     gender=data.get('gender'),
+    #     birthday=data.get('birthday'),
+    #     phone_number=phone_number,
+    #     profile_picture='',
+    #     level=0,
+    #     is_email_verified=False,
+    #     is_phone_verified=True,
+    # )
+    # new_user.save()
 
     # 註冊成功後刪除cache
     cache.delete(phone_number)
