@@ -39,6 +39,43 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"SMS server error","data":{"code":500}
       }
     ```
+## check_register_verification_code
+
+- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_register_verification_code/`
+- **HTTP Method:** POST
+- **Description:** This endpoint is used to check if an email address is already registered in the system.
+
+### Request
+
+- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_register_verification_code/`
+- **Request Headers:**
+  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
+- **Request Body:**
+  ```json
+  {
+    "email": "user@example.com"
+    "phone_number": "09123456789"
+    "verification_code" "TW"
+  }
+### Responses
+- **Status Codes:200 OK: Verification code is valid.**
+    ```json
+      {
+        "result":true,"message":"Verification code is valid","data":{"code":200}
+      }
+     ```
+- **400 Bad Request: Verification code has expired.**
+    ```json
+      {
+        "result":true,"message":"Verification code has expired","data":{"code":400}
+      }
+     ```
+- **400 Bad Request: Email verification code has expired.**
+    ```json
+      {
+        "result":true,"message":"Email verification code has expired","data":{"code":400}
+      }
+    ```
 ## Verify and Register User
 
 - **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/verify_register_user//`

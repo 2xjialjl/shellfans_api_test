@@ -184,9 +184,6 @@ def check_register_verification_code(request):
                 'data': {
                     'code': status.HTTP_400_BAD_REQUEST,
                     'verification_codes': verification_codes,
-                    'email': email,
-                    'code1': code,
-                    'sql_query': sql_query
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
