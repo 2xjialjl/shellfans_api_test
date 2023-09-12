@@ -21,7 +21,7 @@ def convert_country_code(phone_number,country_code):
     # 獲取轉換後的值，如果找不到則返回原始值
     converted_code = country_code_mapping.get(country_code, country_code)
     if converted_code.startswith('+886') and phone_number.startswith('0'):
-        phone_number = country_code + phone_number[1:]  # 去掉前面的 "0"
+        phone_number = converted_code + phone_number[1:]  # 去掉前面的 "0"
 
     return phone_number
 @api_view(['POST'])
