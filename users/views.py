@@ -175,7 +175,6 @@ def check_register_verification_code(request):
         return Response(response_data, status=status.HTTP_200_OK)
     else:
         verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
-        sql_query = str(verification_codes.query)
         if not verification_codes.exists():
             # 無email,驗證失敗
             response_data = {
@@ -185,7 +184,7 @@ def check_register_verification_code(request):
                     'code': status.HTTP_400_BAD_REQUEST,
                     'verification_codes': verification_codes,
                     'email': email,
-                    'sql': sql_query
+                    'code': code
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
