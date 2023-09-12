@@ -151,3 +151,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 允許所有来源的請求
 CORS_ALLOWED_ORIGINS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True  # 允許所有来源訪問
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']  # 允許的HTTP方法
+CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']  # 允許的HTTP標頭
