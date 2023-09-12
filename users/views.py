@@ -79,7 +79,7 @@ def register_email_or_phone(request):
                     'message': 'Sending SMS error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error': e,
+                        'error': str(e),
                         'number': mobile
                     }
                 }
