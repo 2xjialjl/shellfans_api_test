@@ -32,7 +32,7 @@ def register_email_or_phone(request):
     sent_phone_number = convert_country_code(phone_number, country_code)
     if not email:
         # 如果是手機號碼註冊,檢查手機號碼是否重複
-        if not User.objects.filter(phone=phone_number).exists():
+        if not User.objects.filter(phone_number=phone_number).exists():
             # 生成隨機的6位數驗證碼
             verification_code = str(random.randint(100000, 999999))
             # 當前時間
@@ -118,13 +118,12 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception as e:
+            except Exception:
                 response_data = {
                     'result': False,
                     'message': 'Email or Database server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error': str(e)
                     }
                 }
                 return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
