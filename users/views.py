@@ -182,6 +182,8 @@ def check_register_verification_code(request):
                 'message': 'Invalid email verification code',
                 'data': {
                     'code': status.HTTP_400_BAD_REQUEST,
+                    'verification_codes': verification_codes,
+                    'email': email
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
