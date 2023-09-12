@@ -12,6 +12,9 @@ from django.utils import timezone
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+@api_view(['GET'])
+def fb_example(request):
+    return Response({"algorithm": "HMAC-SHA256","expires": 1291840400,"issued_at": 1291836800,"user_id": "218471"}, status=status.HTTP_200_OK)
 def convert_country_code(phone_number,country_code):
     # 定義一個dictory來處理轉換
     country_code_mapping = {
@@ -209,74 +212,83 @@ def check_register_verification_code(request):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-# @api_view(['POST'])
-# def verify_and_register_user(request):
-#     email = request.data.get('email')
-#     phone_number = request.data.get('phone_number')
-#     country_code = request.data.get('country_code')
-#     user = User.objects.filter(Q(email=email) | Q(phone_number=phone_number)).first()
-#     if user:
-#         # 如果用user存在，返回錯誤
-#         response_error_data = {
-#             'result': False,
-#             'message': 'Email or Phone Number already exists',
-#             'data': {
-#                 'code': status.HTTP_400_BAD_REQUEST,
-#             }
-#         }
-#         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-
-
-    # 檢查驗證碼是否正確
-    # if verification_code != cached_verification_code:
-    #     response_error_data = {
-    #         'result': False,
-    #         'message': 'Invalid verification code',
-    #         'data': {
-    #             'code': status.HTTP_400_BAD_REQUEST,
-    #         }
-    #     }
-    #     return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # # 检查驗證碼是否過期
-    # if cached_expiration < timezone.now():
-    #     response_error_data = {
-    #         'result': False,
-    #         'message': 'Verification code has expired',
-    #         'data': {
-    #             'code': status.HTTP_400_BAD_REQUEST,
-    #         }
-    #     }
-    #     return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # # 創建用戶
-    # new_user = User(
-    #     email=data.get('email'),
-    #     name=data.get('name'),
-    #     gender=data.get('gender'),
-    #     birthday=data.get('birthday'),
-    #     phone_number=phone_number,
-    #     profile_picture='',
-    #     level=0,
-    #     is_email_verified=False,
-    #     is_phone_verified=True,
-    # )
-    # new_user.save()
-
-    # 註冊成功後刪除cache
-    # cache.delete(phone_number)
-    # response_correct_data = {
-    #     'result': True,
-    #     'message': 'Successfully registered',
-    #     'data': {
-    #         'code': status.HTTP_200_OK,
-    #     }
-    # }
-    # return Response(response_correct_data, status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def fb_example(request):
-    return Response({"algorithm": "HMAC-SHA256","expires": 1291840400,"issued_at": 1291836800,"user_id": "218471"}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+def register_user(request):
+    data = request.data
+    email = data.get('email')
+    phone_number = data.get('phone_number')
+    if not email:
+        # 創建用戶
+        new_user = User(
+            phone_number=data.get('phone_number'),
+            phone_region=data.get('phone_region'),
+            name=data.get('name'),
+            gender=data.get('gender'),
+            birthday=data.get('birthday'),
+            profile_picture='',
+            level=0,
+            is_email_verified=False,
+            is_phone_verified=True,
+            privacy_agreement=True,
+            terms_agreement=True
+        )
+        new_user.save()
+        try:
+            # 刪除VerificationCode的資料
+            VerificationCode.objects.filter(user_code=phone_number).delete()
+        except:
+            # db server error
+            response_error_data = {
+                'result': False,
+                'message': 'DB server error',
+                'data': {
+                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                }
+            }
+            return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response_data = {
+            'result': True,
+            'message': 'User registration successful',
+            'data': {
+                'code': status.HTTP_200_OK,
+            }
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+    else:
+        # 創建用戶
+        new_user = User(
+            email=data.get('phone_number'),
+            name=data.get('name'),
+            gender=data.get('gender'),
+            birthday=data.get('birthday'),
+            profile_picture='',
+            level=0,
+            is_email_verified=False,
+            is_phone_verified=True,
+            privacy_agreement=True,
+            terms_agreement=True
+        )
+        new_user.save()
+        try:
+            VerificationCode.objects.filter(user_code=email).delete()
+        except:
+            # db server error
+            response_error_data = {
+                'result': False,
+                'message': 'DB server error',
+                'data': {
+                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                }
+            }
+            return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response_data = {
+            'result': True,
+            'message': 'User registration successful',
+            'data': {
+                'code': status.HTTP_200_OK,
+            }
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 @api_view(['POST'])
 def send_login_email(request):
     email = request.data.get('email')

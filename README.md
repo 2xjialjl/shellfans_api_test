@@ -55,7 +55,7 @@ Welcome to Shellfans API documentation. This document provides information about
   {
     "email": "user@example.com"
     "phone_number": "09123456789"
-    "verification_code" "TW"
+    "verification_code" "123456"
   }
 ### Responses
 - **Status Codes:200 OK: Verification code is valid.**

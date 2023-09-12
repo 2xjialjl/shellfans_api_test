@@ -4,8 +4,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('fb_example/', views.fb_example, name='fb_example'),
     path('register_email_or_phone/', views.register_email_or_phone, name='register_email_or_phone'),
-    path('fb_example/',views.fb_example,name='fb_example'),
     path('check_register_verification_code/',views.check_register_verification_code,name='check_register_verification_code'),
-    path('check_login_email/',views.check_login_email,name='check_login_email')
+    path('register_user/',views.register_user,name='register_user'),
 ]

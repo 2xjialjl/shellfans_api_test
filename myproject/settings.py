@@ -94,8 +94,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # 使用TLS加密
-EMAIL_HOST_USER = 'jason56578@gmail.com'
-EMAIL_HOST_PASSWORD = 'kgspftrensjuzjzj'
+EMAIL_HOST_USER = 'hello@shell.fans'
+EMAIL_HOST_PASSWORD = 'ksqqxjaaissugfzp'
 
 # CACHES = {
 #     'default': {
