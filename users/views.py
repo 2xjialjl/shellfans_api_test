@@ -291,10 +291,10 @@ def register_user(request):
 @api_view(['POST'])
 def login_email_or_phone(request):
     email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
-    country_code = request.data.get('country_code')
-    sent_phone_number = convert_country_code(phone_number, country_code)
     if not email:
+        phone_number = request.data.get('phone_number')
+        country_code = request.data.get('country_code')
+        sent_phone_number = convert_country_code(phone_number, country_code)
         # 如果是手機號碼註冊,檢查手機號碼是否重複
         if User.objects.filter(phone_number=phone_number).exists():
             # 生成隨機的6位數驗證碼
