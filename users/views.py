@@ -273,17 +273,6 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
-            try:
-                VerificationCode.objects.filter(user_code=email).delete()
-            except:
-                response_error_data = {
-                    'result': False,
-                    'message': 'delect db error123',
-                    'data': {
-                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    }
-                }
-                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
@@ -292,13 +281,14 @@ def register_user(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except:
+        except Exception as e:
             # db server error
             response_error_data = {
                 'result': False,
                 'message': 'DB server error',
                 'data': {
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'error': str(e)
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
