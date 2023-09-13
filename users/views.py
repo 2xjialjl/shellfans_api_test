@@ -178,7 +178,6 @@ def check_register_verification_code(request):
         return Response(response_data, status=status.HTTP_200_OK)
     else:
         verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
-        sql_query = str(verification_codes.query)
         if not verification_codes.exists():
             # 無email,驗證失敗
             response_data = {
@@ -289,6 +288,7 @@ def register_user(request):
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@api_view(['POST'])
 def login_email_or_phone(request):
     email = request.data.get('email')
     phone_number = request.data.get('phone_number')
