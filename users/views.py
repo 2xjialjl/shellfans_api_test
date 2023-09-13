@@ -267,7 +267,7 @@ def register_user(request):
                 gender=data.get('gender'),
                 birthday=data.get('birthday'),
                 phone_number=None,
-                profile_picture=None,
+                profile_picture='',
                 level=0,
                 is_email_verified=True,
                 is_phone_verified=False,
