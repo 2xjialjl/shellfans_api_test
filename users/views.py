@@ -346,10 +346,10 @@ def login_email_or_phone(request):
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        if not phone_number:
+        else:
             response_data = {
                 'result': False,
-                'message': 'Email and phone are both empty',
+                'message': 'Email is empty',
                 'data': {
                     'code': status.HTTP_400_BAD_REQUEST,
                 }
@@ -394,9 +394,10 @@ def login_email_or_phone(request):
         else:
             response_data = {
                 'result': False,
-                'message': 'Email or phone has be registered',
+                'message': 'Email is empty',
                 'data': {
                     'code': status.HTTP_400_BAD_REQUEST,
+                    'error':User.objects.filter(email=email).exists()
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
