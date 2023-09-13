@@ -224,7 +224,7 @@ def register_user(request):
         try:
             # 創建用戶
             new_user = User(
-                email='',
+                email=None,
                 name=data.get('name'),
                 gender=data.get('gender'),
                 birthday=data.get('birthday'),
@@ -266,8 +266,8 @@ def register_user(request):
                 name=data.get('name'),
                 gender=data.get('gender'),
                 birthday=data.get('birthday'),
-                phone_number='',
-                profile_picture='',
+                phone_number=None,
+                profile_picture=None,
                 level=0,
                 is_email_verified=True,
                 is_phone_verified=False,
