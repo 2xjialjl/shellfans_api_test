@@ -9,6 +9,7 @@ RUN pip install -r requirements.txt
 RUN pip install mysqlclient==2.1.0
 ENV DJANGO_SETTINGS_MODULE=myproject.settings
 ENV DATABASE_URL=mysql://user:password@/database
+ENV TZ=Asia/Taipei
 
 EXPOSE 8080
 
