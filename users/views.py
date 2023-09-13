@@ -278,7 +278,7 @@ def register_user(request):
             except:
                 response_error_data = {
                     'result': False,
-                    'message': 'delect db error',
+                    'message': 'delect db error123',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
                     }
