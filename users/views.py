@@ -273,11 +273,13 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
+            now = timezone.now()
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
                 'data': {
                     'code': status.HTTP_200_OK,
+                    'time': now
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
