@@ -264,8 +264,8 @@ def register_user(request):
                 birthday=data.get('birthday'),
                 profile_picture='',
                 level=0,
-                is_email_verified=False,
-                is_phone_verified=True,
+                is_email_verified=True,
+                is_phone_verified=False,
                 privacy_agreement=True,
                 terms_agreement=True,
             )

@@ -76,26 +76,33 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"Email verification code has expired","data":{"code":400}
       }
     ```
-## Verify and Register User
+## register_user
 
-- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/verify_register_user//`
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_user/`
 - **HTTP Method:** POST
-- **Description:** This endpoint is used to verify a user's identity with a verification code and register a new user in the system.
+- **Description:** This endpoint is used to verify a user's identity register a new user in the system.
 
 ### Request
 
-- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/verify_register_user//`
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/register_user/`
 - **Request Body:**
+- **if your input is email**
   ```json
   {
     "email": "user@example.com",
     "name": "jason",
     "gender": "0",
     "birthday": "1996-01-17",
-    "phone_number": "+886123456789",
-    "verification_code": "123456"
   }
-  
+- **if your input is phone**
+  ```json
+  {
+    "phone_number": "09123456789",
+    "country_code": "TW",
+    "name": "jason",
+    "gender": "0",
+    "birthday": "1996-01-17",
+  }
 ### Responses
 - **Status Codes:
 200 OK:  User registration and verification were successful.**
@@ -104,28 +111,10 @@ Welcome to Shellfans API documentation. This document provides information about
        "result":true,"message":"Successfully registered","data":{"code":200}
       }
      ```
-- **400 Bad Request: User already exists**
+- **500 Bad Request: DB server error.**
     ```json
       {
-        "result":false,"message":"Email or Phone Number already exists","data":{"code":400}
-      }
-    ```
-- **400 Bad Request: catch dont have data.**
-    ```json
-      {
-        "result":false,"message":"Verification code not found or has expired","data":{"code":400}
-      }
-    ```
-- **400 Bad Request: Invalid verification code.**
-    ```json
-      {
-       "result":false,"message":"Invalid verification code","data":{"code":400}
-      }
-    ```
-- **400 Verification code has expired.**
-    ```json
-      {
-        "result":false,"message":"Verification code has expired","data":{"code":400}
+        "result":false,"message":"DB server error","data":{"code":500}
       }
     ```
 ## Login Email
