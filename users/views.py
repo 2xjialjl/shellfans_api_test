@@ -220,17 +220,18 @@ def register_user(request):
     if not email:
         # 創建用戶
         new_user = User(
-            phone_number=data.get('phone_number'),
-            phone_region=data.get('phone_region'),
+            email='',
             name=data.get('name'),
             gender=data.get('gender'),
             birthday=data.get('birthday'),
+            phone_number=data.get('phone_number'),
             profile_picture='',
             level=0,
             is_email_verified=False,
             is_phone_verified=True,
             privacy_agreement=True,
-            terms_agreement=True
+            terms_agreement=True,
+            phone_region=data.get('phone_region'),
         )
         new_user.save()
         try:
@@ -257,16 +258,18 @@ def register_user(request):
     else:
         # 創建用戶
         new_user = User(
-            email=data.get('phone_number'),
+            email=email,
             name=data.get('name'),
             gender=data.get('gender'),
             birthday=data.get('birthday'),
+            phone_number='',
             profile_picture='',
             level=0,
             is_email_verified=False,
             is_phone_verified=True,
             privacy_agreement=True,
-            terms_agreement=True
+            terms_agreement=True,
+            phone_region='',
         )
         new_user.save()
         try:
