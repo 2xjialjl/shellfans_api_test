@@ -221,7 +221,6 @@ def register_user(request):
         try:
             # 創建用戶
             new_user = User(
-                email='',
                 name=data.get('name'),
                 gender=data.get('gender'),
                 birthday=data.get('birthday'),
@@ -237,6 +236,14 @@ def register_user(request):
             new_user.save()
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=phone_number).delete()
+            response_data = {
+                'result': True,
+                'message': 'User registration successful',
+                'data': {
+                    'code': status.HTTP_200_OK,
+                }
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
         except:
             # db server error
             response_error_data = {
@@ -244,37 +251,34 @@ def register_user(request):
                 'message': 'DB server error',
                 'data': {
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    'error': request.data
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        response_data = {
-            'result': True,
-            'message': 'User registration successful',
-            'data': {
-                'code': status.HTTP_200_OK,
-            }
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
     else:
-        # 創建用戶
-        new_user = User(
-            email=email,
-            name=data.get('name'),
-            gender=data.get('gender'),
-            birthday=data.get('birthday'),
-            phone_number='',
-            profile_picture='',
-            level=0,
-            is_email_verified=False,
-            is_phone_verified=True,
-            privacy_agreement=True,
-            terms_agreement=True,
-            phone_region='',
-        )
-        new_user.save()
         try:
+            # 創建用戶
+            new_user = User(
+                email=email,
+                name=data.get('name'),
+                gender=data.get('gender'),
+                birthday=data.get('birthday'),
+                profile_picture='',
+                level=0,
+                is_email_verified=False,
+                is_phone_verified=True,
+                privacy_agreement=True,
+                terms_agreement=True,
+            )
+            new_user.save()
             VerificationCode.objects.filter(user_code=email).delete()
+            response_data = {
+                'result': True,
+                'message': 'User registration successful',
+                'data': {
+                    'code': status.HTTP_200_OK,
+                }
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
         except:
             # db server error
             response_error_data = {
@@ -285,14 +289,6 @@ def register_user(request):
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        response_data = {
-            'result': True,
-            'message': 'User registration successful',
-            'data': {
-                'code': status.HTTP_200_OK,
-            }
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
 @api_view(['POST'])
 def send_login_email(request):
     email = request.data.get('email')
