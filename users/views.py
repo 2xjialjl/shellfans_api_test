@@ -104,7 +104,7 @@ def register_email_or_phone(request):
             # 當前時間+10分鐘
             expiration_time = now + timedelta(minutes=10)
             # 發送email
-            html_message = render_to_string('email_ register_template.html', {'verification_code': verification_code})
+            html_message = render_to_string('email_register_template.html', {'verification_code': verification_code})
             subject = 'shellfans 註冊驗證信'
             from_email = 'hello@shell.fans'
             recipient_list = [email]
