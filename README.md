@@ -128,21 +128,27 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":false,"message":"DB server error","data":{"code":500}
       }
     ```
-## Login Email
+## login_email_or_phone
 
-- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/send_login_email/`
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/login_email_or_phone/`
 - **HTTP Method:** POST
-- **Description:** This is to send a login email verification code.
+- **Description:** This is to send a login verification code.
 
 ### Request
 
-- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/send_login_email/`
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/login_email_or_phone/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
-- **Request Body:**
+- **if your input is email**
   ```json
   {
-    "email": "user@example.com"
+    "email": "user@example.com",
+  }
+- **if your input is phone**
+  ```json
+  {
+    "phone_number": "09123456789",
+    "country_code": "TW",
   }
 ### Responses
 - **Status Codes:
@@ -164,52 +170,46 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"Email server error","data":{"code":400}
       }
     ```
-## Confirm Email Verification Code
+  ## check_login_verification_code
 
-- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_login_email/`
+- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_login_verification_code/`
 - **HTTP Method:** POST
-- **Description:** This is confirm email verification code.
+- **Description:** This endpoint is used to check if an email address is already registered in the system.
 
 ### Request
 
-- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/check_login_email/`
+- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_login_verification_code/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
+- - **if your input is phone**
   ```json
   {
-    "email": "user@example.com",
-    "verification_code": "123456"
+    "phone_number": "09123456789"
+    "verification_code" "123456"
+  }
+- - **if your input is email**
+  ```json
+  {
+    "email": "user@example.com"
+    "verification_code" "123456"
   }
 ### Responses
-- **Status Codes:
-200 OK: Successfully login.**
+- **Status Codes:200 OK: Verification code is valid.**
     ```json
       {
-        "result":true,"message":"Successfully login","data":{"code":200}
+        "result":true,"message":"Verification code is valid","data":{"code":200}
       }
      ```
-- **400 Bad Request: catch dont have data.**
+- **400 Bad Request: Verification code has expired.**
     ```json
       {
-        "result":false,"message":"Verification code not found or has expired","data":{"code":400}
+        "result":true,"message":"Verification code has expired","data":{"code":400}
       }
-    ```
-- **400 Bad Request: Invalid verification code.**
-  ```json
-    {
-     "result":false,"message":"Invalid verification code","data":{"code":400}
-    }
-  ```
-- **400 Verification code has expired.**
-  ```json
-    {
-      "result":false,"message":"Verification code has expired","data":{"code":400}
-    }
-  ```
-- **500 Bad Request: The email address server error.**
+     ```
+- **400 Bad Request: Email verification code has expired.**
     ```json
       {
-        "result":true,"message":"Email server error","data":{"code":400}
+        "result":true,"message":"Email verification code has expired","data":{"code":400}
       }
     ```

@@ -86,10 +86,6 @@ DATABASES = {
         'PASSWORD': '1234',
         'HOST': '/cloudsql/lofty-hearth-394203:asia-east1:shellfanstest',
         'PORT': '3306',
-        'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
-            'init_command': "SET time_zone = '+08:00'",
-        },
     }
 }
 

@@ -9,4 +9,5 @@ urlpatterns = [
     path('check_register_verification_code/',views.check_register_verification_code,name='check_register_verification_code'),
     path('register_user/',views.register_user,name='register_user'),
     path('login_email_or_phone/',views.login_email_or_phone,name='login_email_or_phone'),
+    path('check_login_verification_code/',views.check_login_verification_code,name='check_login_verification_code'),
 ]

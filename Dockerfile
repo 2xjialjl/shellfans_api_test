@@ -10,6 +10,5 @@ RUN pip install mysqlclient==2.1.0
 ENV DJANGO_SETTINGS_MODULE=myproject.settings
 ENV DATABASE_URL=mysql://user:password@/database
 ENV TZ=Asia/Taipei
-RUN ln -snf /usr/share/zoneinfo/Asia/Taipei /etc/localtime && echo Asia/Taipei > /etc/timezone
 EXPOSE 8080
 CMD ["gunicorn", "myproject.wsgi", "--bind", "0.0.0.0:8080", "--workers", "3"]
