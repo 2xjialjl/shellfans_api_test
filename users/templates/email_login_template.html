@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shell Fans Email</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .text {
+      color: #3c3c3c;
+    }
+    body {
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+    }
+    .outside-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 75%;
+      height: 75%;
+      background-color: #989CF4;
+      padding: 35px 35px 35px 35px;
+      border-radius: 20px;
+    }
+    .inside-container {
+      width: 100%;
+      height: 100%;
+      background-color: #EDEBEB;
+      border-radius: 20px;
+      padding-top: 5%;
+      padding-bottom: 5%;
+    }
+    .topic {
+      width: 100%;
+      font-size: 20px;
+      text-align: center;
+    }
+    .pin-code-container {
+      width: 50%;
+      height: 90px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 90px;
+      font-size: 32px;
+      margin-top: 5%;
+    }
+    .content {
+      width: 100%;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 5%;
+    }
+    .footer {
+      width: 100%;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 10%;
+    }
+    @media screen and (max-width:1300px) {
+      .topic {
+        font-size: 14px;
+      }
+      .pin-code-container {
+        font-size: 24px;
+      }
+      .content {
+        padding: 0px 10px;
+        font-size: 12px;
+      }
+      .footer {
+        padding: 0px 10px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+  <body>
+    <div class="outside-container">
+      <div class="inside-container">
+        <!-- Topic -->
+        <div class="topic text">
+          您的驗證碼為
+        </div>
+        <!-- End Topic -->
+        <!-- Pin Code -->
+        <div style="width: 100%;">
+          <div class="pin-code-container">
+            {{ verification_code }}
+          </div>
+        </div>
+        <!-- End Pin Code -->
+        <!-- Content -->
+        <div class="content text">
+          請於10分鐘內前往唄粉登入網址輸入已完成登入。
+        </div>
+        <!-- End Content -->
+        <!-- Footer -->
+        <div class="footer text">
+          若您並未要求此代碼，可以忽略此電子郵件。可能有人誤輸入您的電子郵件地址。
+        </div>
+        <!-- End Footer -->
+      </div>
+    </div>
+  </body>
+</html>
