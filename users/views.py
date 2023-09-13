@@ -32,8 +32,8 @@ def register_email_or_phone(request):
     email = request.data.get('email')
     phone_number = request.data.get('phone_number')
     country_code = request.data.get('country_code')
-    sent_phone_number = convert_country_code(phone_number, country_code)
     if not email:
+        sent_phone_number = convert_country_code(phone_number, country_code)
         # 如果是手機號碼註冊,檢查手機號碼是否重複
         if not User.objects.filter(phone_number=phone_number).exists():
             # 生成隨機的6位數驗證碼
@@ -291,9 +291,9 @@ def register_user(request):
 @api_view(['POST'])
 def login_email_or_phone(request):
     email = request.data.get('email')
+    country_code = request.data.get('country_code')
+    phone_number = request.data.get('phone_number')
     if not email:
-        phone_number = request.data.get('phone_number')
-        country_code = request.data.get('country_code')
         sent_phone_number = convert_country_code(phone_number, country_code)
         # 如果是手機號碼註冊,檢查手機號碼是否重複
         if User.objects.filter(phone_number=phone_number).exists():
@@ -397,7 +397,7 @@ def login_email_or_phone(request):
                 'message': 'Email is empty',
                 'data': {
                     'code': status.HTTP_400_BAD_REQUEST,
-                    'error':User.objects.filter(email=email).exists()
+                    'error': User.objects.filter(email=email).exists()
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
