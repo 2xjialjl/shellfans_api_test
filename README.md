@@ -14,11 +14,16 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
+- - **if your input is phone**
+  ```json
+  {
+    "phone_number": "09123456789"
+    "country_code" "TW"
+  }
+- - **if your input is email**
   ```json
   {
     "email": "user@example.com"
-    "phone_number": "09123456789"
-    "country_code" "TW"
   }
 ### Responses
 - **Status Codes:200 OK: Sending email successfully.**
@@ -51,10 +56,16 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
+- - **if your input is phone**
+  ```json
+  {
+    "phone_number": "09123456789"
+    "verification_code" "123456"
+  }
+- - **if your input is email**
   ```json
   {
     "email": "user@example.com"
-    "phone_number": "09123456789"
     "verification_code" "123456"
   }
 ### Responses
