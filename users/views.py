@@ -218,23 +218,23 @@ def register_user(request):
     email = data.get('email')
     phone_number = data.get('phone_number')
     if not email:
-        # 創建用戶
-        new_user = User(
-            email='',
-            name=data.get('name'),
-            gender=data.get('gender'),
-            birthday=data.get('birthday'),
-            phone_number=data.get('phone_number'),
-            profile_picture='',
-            level=0,
-            is_email_verified=False,
-            is_phone_verified=True,
-            privacy_agreement=True,
-            terms_agreement=True,
-            phone_region=data.get('phone_region'),
-        )
-        new_user.save()
         try:
+            # 創建用戶
+            new_user = User(
+                email='',
+                name=data.get('name'),
+                gender=data.get('gender'),
+                birthday=data.get('birthday'),
+                phone_number=data.get('phone_number'),
+                profile_picture='',
+                level=0,
+                is_email_verified=False,
+                is_phone_verified=True,
+                privacy_agreement=True,
+                terms_agreement=True,
+                phone_region=data.get('country_code'),
+            )
+            new_user.save()
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=phone_number).delete()
         except:
@@ -244,6 +244,7 @@ def register_user(request):
                 'message': 'DB server error',
                 'data': {
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'error': request.data
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
