@@ -135,10 +135,10 @@ def register_email_or_phone(request):
                 'result': False,
                 'message': 'Email or phone has be registered',
                 'data': {
-                    'code': status.HTTP_400001_BAD_REQUEST,
+                    'code': status.HTTP_400_BAD_REQUEST,
                 }
             }
-            return Response(response_data, status=status.HTTP_400001_BAD_REQUEST)
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
 def check_register_verification_code(request):
     email = request.data.get('email')
@@ -396,7 +396,7 @@ def login_email_or_phone(request):
                 'result': False,
                 'message': 'Email or phone has be registered',
                 'data': {
-                    'code': status.HTTP_400001_BAD_REQUEST,
+                    'code': status.HTTP_400_BAD_REQUEST,
                 }
             }
-            return Response(response_data, status=status.HTTP_400001_BAD_REQUEST)
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
