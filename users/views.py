@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 @api_view(['GET'])
 def fb_example(request):
     return Response({"algorithm": "HMAC-SHA256","expires": 1291840400,"issued_at": 1291836800,"user_id": "218471"}, status=status.HTTP_200_OK)
+# 處理電話號碼
 def convert_country_code(phone_number,country_code):
     # 定義一個dictory來處理轉換
     country_code_mapping = {
@@ -27,6 +28,7 @@ def convert_country_code(phone_number,country_code):
         phone_number = converted_code + phone_number[1:]  # 去掉前面的 "0"
 
     return phone_number
+# 註冊的寄發驗證信或簡訊
 @api_view(['POST'])
 def register_email_or_phone(request):
     email = request.data.get('email')
@@ -139,6 +141,7 @@ def register_email_or_phone(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+# 檢查驗證碼
 @api_view(['POST'])
 def check_register_verification_code(request):
     email = request.data.get('email')
@@ -211,6 +214,7 @@ def check_register_verification_code(request):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
+# 註冊所有資料帶入資料庫
 @api_view(['POST'])
 def register_user(request):
     data = request.data
@@ -269,7 +273,17 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
-            VerificationCode.objects.filter(user_code=email).delete()
+            try:
+                VerificationCode.objects.filter(user_code=email).delete()
+            except:
+                response_error_data = {
+                    'result': False,
+                    'message': 'delect db error',
+                    'data': {
+                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    }
+                }
+                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
