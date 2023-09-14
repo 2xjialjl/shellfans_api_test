@@ -313,12 +313,11 @@ def register_user(request):
 # 登入的寄發驗證信或簡訊
 @api_view(['POST'])
 def login_email_or_phone(request):
-    email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
-    if not email:
+    accent = request.data.get('accent')
+    if '@' not in accent:
         # 檢查有無手機號碼
-        if User.objects.filter(phone_number=phone_number).exists():
-            user = User.objects.get(phone_number=phone_number)
+        if User.objects.filter(phone_number=accent).exists():
+            user = User.objects.get(phone_number=accent)
             phone_number = user.phone_number
             country_code = user.phone_region
             sent_phone_number = convert_country_code(phone_number, country_code)
@@ -382,7 +381,7 @@ def login_email_or_phone(request):
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     else:
         # 檢查有無email
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=accent).exists():
             # 生成隨機的6位數驗證碼
             verification_code = str(random.randint(100000, 999999))
             # 當前時間
@@ -393,11 +392,11 @@ def login_email_or_phone(request):
             html_message = render_to_string('email_login_template.html', {'verification_code': verification_code})
             subject = 'shellfans 登入驗證信'
             from_email = 'hello@shell.fans'
-            recipient_list = [email]
+            recipient_list = [accent]
             try:
                 send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
                 # 存到db
-                verification_code_db = VerificationCode(user_code=email, code=verification_code, expiration_time=expiration_time)
+                verification_code_db = VerificationCode(user_code=accent, code=verification_code, expiration_time=expiration_time)
                 verification_code_db.save()
                 response_correct_data = {
                     'result': True,
