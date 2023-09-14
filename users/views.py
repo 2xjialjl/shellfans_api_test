@@ -528,17 +528,26 @@ def quick_registration(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except Exception as e:
+        except:
                 # db server error
                 response_error_data = {
                     'result': False,
                     'message': 'DB server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error':e
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        # 处理重复的email情况
+        response_error_data = {
+            'result': False,
+            'message': 'Email already exists',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
 # 寄出錯誤信件
 def send_email(subject, body, to_email):
