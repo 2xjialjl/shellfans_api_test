@@ -1,7 +1,6 @@
 # users/views.py
 import random
-import requests
-from datetime import datetime, timedelta
+from datetime import timedelta
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -288,7 +287,7 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
-            now = timezone.now()
+            now = datetime.now()
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
@@ -501,40 +500,43 @@ def check_login_verification_code(request):
 @api_view(['POST'])
 def quick_registration(request):
     data = request.data
-    try:
-        new_user = User(
-            email=data.get('email'),
-            name=data.get('name'),
-            gender='',
-            birthday='',
-            phone_number=None,
-            profile_picture='',
-            level=0,
-            is_email_verified=False,
-            is_phone_verified=False,
-            privacy_agreement=False,
-            terms_agreement=False,
-            phone_region='',
-        )
-        new_user.save()
-        response_data = {
-            'result': True,
-            'message': 'User registration successful',
-            'data': {
-                'code': status.HTTP_200_OK,
-            }
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
-    except:
-            # db server error
-            response_error_data = {
-                'result': False,
-                'message': 'DB server error',
+    email = data.get('email')
+    # 檢查email是否重複
+    if not User.objects.filter(email=email).exists():
+        try:
+            new_user = User(
+                email=email,
+                name=data.get('name'),
+                gender='',
+                birthday='',
+                phone_number=None,
+                profile_picture='',
+                level=0,
+                is_email_verified=False,
+                is_phone_verified=False,
+                privacy_agreement=False,
+                terms_agreement=False,
+                phone_region='',
+            )
+            new_user.save()
+            response_data = {
+                'result': True,
+                'message': 'User registration successful',
                 'data': {
-                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'code': status.HTTP_200_OK,
                 }
             }
-            return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(response_data, status=status.HTTP_200_OK)
+        except:
+                # db server error
+                response_error_data = {
+                    'result': False,
+                    'message': 'DB server error',
+                    'data': {
+                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    }
+                }
+                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # 寄出錯誤信件
 def send_email(subject, body, to_email):
