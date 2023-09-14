@@ -17,3 +17,5 @@ tzdata==2023.3
 urllib3==2.0.4
 django-cors-headers
 django-redis
+selenium
+BeautifulSoup4

@@ -170,7 +170,7 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"Email server error","data":{"code":400}
       }
     ```
-  ## check_login_verification_code
+## check_login_verification_code
 
 - **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_login_verification_code/`
 - **HTTP Method:** POST
@@ -211,5 +211,36 @@ Welcome to Shellfans API documentation. This document provides information about
     ```json
       {
         "result":true,"message":"Email verification code has expired","data":{"code":400}
+      }
+    ```
+
+## quick_registration
+
+- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/quick_registration/`
+- **HTTP Method:** POST
+- **Description:** This endpoint is used to check if an email address is already registered in the system.
+
+### Request
+
+- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/quick_registration/`
+- **Request Headers:**
+  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
+- **Request Body:**
+  ```json
+  {
+    "email": "user@example.com"
+    "name" "jason"
+  }
+### Responses
+- **Status Codes:200 OK: Verification code is valid.**
+    ```json
+      {
+        "result":true,"message":"User registration successful","data":{"code":200}
+      }
+     ```
+- **500 Bad Request: DB server error.**
+    ```json
+      {
+        "result":true,"message":"DB server error","data":{"code":500}
       }
     ```
