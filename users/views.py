@@ -509,7 +509,7 @@ def quick_registration(request):
                 email=email,
                 name=data.get('name'),
                 gender='',
-                birthday='',
+                birthday=None,
                 phone_number=None,
                 profile_picture='',
                 level=0,

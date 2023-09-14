@@ -144,6 +144,7 @@ Welcome to Shellfans API documentation. This document provides information about
   {
     "accout": "user@example.com",
   }
+
   ```json
   {
     "accout": "09123456789",
@@ -180,16 +181,16 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
-- - **if your input is phone**
+- - **you can input phone or email**
   ```json
   {
-    "phone_number": "09123456789"
+    "accout": "09123456789"
     "verification_code" "123456"
   }
-- - **if your input is email**
+
   ```json
   {
-    "email": "user@example.com"
+    "accout": "user@example.com"
     "verification_code" "123456"
   }
 ### Responses
