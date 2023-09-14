@@ -313,7 +313,7 @@ def register_user(request):
 # 登入的寄發驗證信或簡訊
 @api_view(['POST'])
 def login_email_or_phone(request):
-    accout = request.data.get('accout')
+    accout = request.data.get('account')
     if '@' not in accout:
         # 檢查有無手機號碼
         if User.objects.filter(phone_number=accout).exists():
@@ -428,7 +428,7 @@ def login_email_or_phone(request):
 # 登入的檢查驗證碼
 @api_view(['POST'])
 def check_login_verification_code(request):
-    accout = request.data.get('accout')
+    accout = request.data.get('account')
     code = request.data.get('verification_code')
     if '@' not in accout:
         verification_codes = VerificationCode.objects.filter(user_code=accout, code=code)
@@ -535,7 +535,7 @@ def quick_registration(request):
                     'message': 'DB server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error':e
+                        'error':str(e)
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

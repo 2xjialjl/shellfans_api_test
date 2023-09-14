@@ -142,12 +142,12 @@ Welcome to Shellfans API documentation. This document provides information about
 - **you can input phone or email**
   ```json
   {
-    "accout": "user@example.com",
+    "account": "user@example.com",
   }
 
   ```json
   {
-    "accout": "09123456789",
+    "account": "09123456789",
   }
 ### Responses
 - **Status Codes:
@@ -184,13 +184,13 @@ Welcome to Shellfans API documentation. This document provides information about
 - - **you can input phone or email**
   ```json
   {
-    "accout": "09123456789"
+    "account": "09123456789"
     "verification_code" "123456"
   }
 
   ```json
   {
-    "accout": "user@example.com"
+    "account": "user@example.com"
     "verification_code" "123456"
   }
 ### Responses
