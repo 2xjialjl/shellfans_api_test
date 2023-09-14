@@ -97,7 +97,7 @@ def register_email_or_phone(request):
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
                     }
                 }
-                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         if not phone_number:
             response_data = {
                 'result': False,
@@ -232,6 +232,7 @@ def register_user(request):
     data = request.data
     email = data.get('email')
     phone_number = data.get('phone_number')
+    now = datetime.now()
     if not email:
         try:
             # 創建用戶
@@ -243,6 +244,7 @@ def register_user(request):
                 phone_number=data.get('phone_number'),
                 profile_picture='',
                 level=0,
+                created_at=now,
                 is_email_verified=False,
                 is_phone_verified=True,
                 privacy_agreement=True,
@@ -281,6 +283,7 @@ def register_user(request):
                 phone_number=None,
                 profile_picture='',
                 level=0,
+                created_at=now,
                 is_email_verified=True,
                 is_phone_verified=False,
                 privacy_agreement=True,
@@ -293,7 +296,6 @@ def register_user(request):
                 'message': 'User registration successful',
                 'data': {
                     'code': status.HTTP_200_OK,
-                    'time': now
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -312,12 +314,14 @@ def register_user(request):
 @api_view(['POST'])
 def login_email_or_phone(request):
     email = request.data.get('email')
-    country_code = request.data.get('country_code')
     phone_number = request.data.get('phone_number')
     if not email:
-        sent_phone_number = convert_country_code(phone_number, country_code)
         # 檢查有無手機號碼
         if User.objects.filter(phone_number=phone_number).exists():
+            user = User.objects.get(phone_number=phone_number)
+            phone_number = user.phone_number
+            country_code = user.country_code
+            sent_phone_number = convert_country_code(phone_number, country_code)
             # 生成隨機的6位數驗證碼
             verification_code = str(random.randint(100000, 999999))
             # 當前時間
