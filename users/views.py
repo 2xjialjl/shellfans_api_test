@@ -528,13 +528,14 @@ def quick_registration(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except:
+        except Exception as e:
                 # db server error
                 response_error_data = {
                     'result': False,
                     'message': 'DB server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        'error':e
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
