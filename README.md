@@ -139,16 +139,14 @@ Welcome to Shellfans API documentation. This document provides information about
 - **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/login_email_or_phone/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
-- **if your input is email**
+- **you can input phone or email**
   ```json
   {
-    "email": "user@example.com",
+    "accout": "user@example.com",
   }
-- **if your input is phone**
   ```json
   {
-    "phone_number": "09123456789",
-    "country_code": "TW",
+    "accout": "09123456789",
   }
 ### Responses
 - **Status Codes:
