@@ -428,11 +428,10 @@ def login_email_or_phone(request):
 # 登入的檢查驗證碼
 @api_view(['POST'])
 def check_login_verification_code(request):
-    email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
+    accout = request.data.get('accout')
     code = request.data.get('verification_code')
-    if not email:
-        verification_codes = VerificationCode.objects.filter(user_code=phone_number, code=code)
+    if '@' not in accout:
+        verification_codes = VerificationCode.objects.filter(user_code=accout, code=code)
         if not verification_codes.exists():
             # 驗證碼不存在,驗證失敗
             response_data = {
@@ -464,7 +463,7 @@ def check_login_verification_code(request):
         }
         return Response(response_data, status=status.HTTP_200_OK)
     else:
-        verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
+        verification_codes = VerificationCode.objects.filter(user_code=accout, code=code)
         if not verification_codes.exists():
             # 無email,驗證失敗
             response_data = {
@@ -529,13 +528,14 @@ def quick_registration(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except:
+        except Exception as e:
                 # db server error
                 response_error_data = {
                     'result': False,
                     'message': 'DB server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        'error':e
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
