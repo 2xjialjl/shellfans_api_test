@@ -320,7 +320,7 @@ def login_email_or_phone(request):
         if User.objects.filter(phone_number=phone_number).exists():
             user = User.objects.get(phone_number=phone_number)
             phone_number = user.phone_number
-            country_code = user.country_code
+            country_code = user.phone_region
             sent_phone_number = convert_country_code(phone_number, country_code)
             # 生成隨機的6位數驗證碼
             verification_code = str(random.randint(100000, 999999))
