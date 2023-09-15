@@ -19,3 +19,4 @@ django-cors-headers
 django-redis
 selenium
 BeautifulSoup4
+djangorestframework-simplejwt

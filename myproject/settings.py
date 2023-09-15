@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -97,15 +98,7 @@ EMAIL_USE_TLS = True  # 使用TLS加密
 EMAIL_HOST_USER = 'hello@shell.fans'
 EMAIL_HOST_PASSWORD = 'ksqqxjaaissugfzp'
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': 'redis://redis-server:6379/1',  # Redis 伺服器位置
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
+
 
 REGION = 'asia-east1'
 
@@ -155,3 +148,8 @@ CORS_ALLOW_ALL_ORIGINS = True  # 允許所有来源訪問
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']  # 允許的HTTP方法
 CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']  # 允許的HTTP標頭
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}

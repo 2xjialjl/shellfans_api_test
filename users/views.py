@@ -9,6 +9,7 @@ from .models import User, VerificationCode
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+import jwt
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -254,11 +255,13 @@ def register_user(request):
             new_user.save()
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=phone_number).delete()
+            token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
                 'data': {
                     'code': status.HTTP_200_OK,
+                    'token':token
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -274,6 +277,7 @@ def register_user(request):
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         try:
+            now = datetime.now()
             # 創建用戶
             new_user = User(
                 email=email,
@@ -290,12 +294,13 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
-            now = datetime.now()
+            token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
                 'data': {
                     'code': status.HTTP_200_OK,
+                    'token':token
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -454,11 +459,13 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        token = jwt.encode('secret',algorithm='HS256').decode('utf-8')
         response_data = {
             'result': True,
             'message': 'Verification code is valid',
             'data': {
                 'code': status.HTTP_200_OK,
+                'token': token
             }
         }
         return Response(response_data, status=status.HTTP_200_OK)
@@ -488,11 +495,13 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
         response_data = {
             'result': True,
             'message': 'Verification code is valid',
             'data': {
                 'code': status.HTTP_200_OK,
+                'token': token
             }
         }
         return Response(response_data, status=status.HTTP_200_OK)
@@ -520,11 +529,13 @@ def quick_registration(request):
                 phone_region='',
             )
             new_user.save()
+            token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
                 'data': {
                     'code': status.HTTP_200_OK,
+                    'token': token
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
@@ -540,7 +551,7 @@ def quick_registration(request):
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
-        # 处理重复的email情况
+        # 處理重複的email情況
         response_error_data = {
             'result': False,
             'message': 'Email already exists',
@@ -550,7 +561,36 @@ def quick_registration(request):
         }
         return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
 
-# 寄出錯誤信件
+# 呼叫token
+@api_view(['GET'])
+def get_user_info(request):
+    token = request.get('token')
+    if not token:
+        # token不存在,失敗
+        response_data = {
+            'result': False,
+            'message': 'Invalid token',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        payload = jwt.decode(token,'secret', algorithm=['HS256'])
+    except jwt.ExpiredSignatureError:
+        # token不存在,失敗
+        response_data = {
+            'result': False,
+            'message': 'Token error',
+            'data': {
+                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
+        }
+        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    user = User.objects.get([payload['id']])
+    serializer = User(user)
+    return Response(serializer.data)
+# 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
     outlook_user = 'jason.huang@shell.fans'
     outlook_password = '2Xjialjl@'
