@@ -9,6 +9,7 @@ from .models import User, VerificationCode
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404
 import jwt
 import time
 from selenium import webdriver
@@ -495,7 +496,8 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        user_id = User.id
+        user = get_object_or_404(User, email=accout)
+        user_id = user.id
         payload = {
             'id': user_id
         }
