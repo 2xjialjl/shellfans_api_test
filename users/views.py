@@ -495,7 +495,10 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
+        payload = {
+            'id': User.id
+        }
+        token = jwt.encode(payload,'secret', algorithm='HS256').decode('utf-8')
         response_data = {
             'result': True,
             'message': 'Verification code is valid',
