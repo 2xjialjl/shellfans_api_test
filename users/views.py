@@ -495,8 +495,9 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        user_id = User.id
         payload = {
-            'id': User.id
+            'id': user_id
         }
         token = jwt.encode(payload,'secret', algorithm='HS256').decode('utf-8')
         response_data = {
