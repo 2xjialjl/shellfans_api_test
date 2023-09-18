@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
+from .serializers import UserSerializer
 import jwt
 import time
 from selenium import webdriver
@@ -609,7 +610,7 @@ def get_user_info(request):
         }
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     user = User.objects.filter(id=payload['id']).first()
-    serializer = User(user)
+    serializer = UserSerializer(user)
     return Response(serializer.data)
 
 # 爬蟲寄出錯誤信件
