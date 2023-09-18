@@ -599,6 +599,32 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     try:
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        name = payload.get('name')
+        email = payload.get('email')
+        gender = payload.get('gender')
+        birthday = payload.get('birthday')
+        phone_number = payload.get('phone_number')
+        profile_picture = payload.get('profile_picture')
+        level =payload.get('level')
+        is_email_verified = payload.get('is_email_verified')
+        is_phone_verified = payload.get('is_phone_verified')
+        response_data = {
+            'result': True,
+            'message': 'User information retrieved successfully',
+            'data': {
+                'name': name,
+                'email': email,
+                'gender': gender,
+                'birthday': birthday,
+                'phone_number': phone_number,
+                'profile_picture': profile_picture,
+                'level': level,
+                'is_email_verified': is_email_verified,
+                'is_phone_verified': is_phone_verified
+            }
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
     except jwt.ExpiredSignatureError:
         # token不存在,失敗
         response_data = {
