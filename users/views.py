@@ -586,7 +586,7 @@ def quick_registration(request):
 # 呼叫token
 @api_view(['GET'])
 def get_user_info(request):
-    token = request.get('token')
+    token = request.query_params.get('token')
     if not token:
         # token不存在,失敗
         response_data = {
