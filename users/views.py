@@ -598,7 +598,7 @@ def get_user_info(request):
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     try:
-        payload = jwt.decode(token,'secret', algorithm=['HS256'])
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         # token不存在,失敗
         response_data = {
