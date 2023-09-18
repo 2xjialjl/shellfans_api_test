@@ -611,32 +611,32 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     user = User.objects.filter(id=payload['id']).first()
     serializer = UserSerializer(user)
-    name = serializer.get('name')
-    email = serializer.get('email')
-    gender = serializer.get('gender')
-    birthday = serializer.get('birthday')
-    phone_number = serializer.get('phone_number')
-    profile_picture = serializer.get('profile_picture')
-    level = serializer.get('level')
-    is_email_verified = serializer.get('is_email_verified')
-    is_phone_verified = serializer.get('is_phone_verified')
-    response_data = {
-        'result': True,
-        'message': 'User information retrieved successfully',
-        'data': {
-            'name': name,
-            'email': email,
-            'gender': gender,
-            'birthday': birthday,
-            'phone_number': phone_number,
-            'profile_picture': profile_picture,
-            'level': level,
-            'is_email_verified': is_email_verified,
-            'is_phone_verified': is_phone_verified
-        }
-    }
+    # name = serializer.get('name')
+    # email = serializer.get('email')
+    # gender = serializer.get('gender')
+    # birthday = serializer.get('birthday')
+    # phone_number = serializer.get('phone_number')
+    # profile_picture = serializer.get('profile_picture')
+    # level = serializer.get('level')
+    # is_email_verified = serializer.get('is_email_verified')
+    # is_phone_verified = serializer.get('is_phone_verified')
+    # response_data = {
+    #     'result': True,
+    #     'message': 'User information retrieved successfully',
+    #     'data': {
+    #         'name': name,
+    #         'email': email,
+    #         'gender': gender,
+    #         'birthday': birthday,
+    #         'phone_number': phone_number,
+    #         'profile_picture': profile_picture,
+    #         'level': level,
+    #         'is_email_verified': is_email_verified,
+    #         'is_phone_verified': is_phone_verified
+    #     }
+    # }
 
-    return Response(response_data, serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
