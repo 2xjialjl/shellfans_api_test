@@ -501,7 +501,7 @@ def check_login_verification_code(request):
         payload = {
             'id': user_id
         }
-        token = jwt.encode(payload,'secret', algorithm='HS256').decode('utf-8')
+        token = jwt.encode(payload,'secret', algorithm='HS256')
         response_data = {
             'result': True,
             'message': 'Verification code is valid',
