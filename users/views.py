@@ -256,7 +256,12 @@ def register_user(request):
             new_user.save()
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=phone_number).delete()
-            token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
+            user = get_object_or_404(User, email=email)
+            user_id = user.id
+            payload = {
+                'id': user_id
+            }
+            token = jwt.encode(payload, 'secret', algorithm='HS256')
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
@@ -295,7 +300,12 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
-            token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
+            user = get_object_or_404(User, email=email)
+            user_id = user.id
+            payload = {
+                'id': user_id
+            }
+            token = jwt.encode(payload, 'secret', algorithm='HS256')
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
@@ -460,7 +470,12 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        token = jwt.encode('secret',algorithm='HS256').decode('utf-8')
+        user = get_object_or_404(User, email=accout)
+        user_id = user.id
+        payload = {
+            'id': user_id
+        }
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
         response_data = {
             'result': True,
             'message': 'Verification code is valid',
@@ -593,9 +608,10 @@ def get_user_info(request):
             }
         }
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    user = User.objects.get([payload['id']])
+    user = User.objects.filter(id=payload['id']).first()
     serializer = User(user)
     return Response(serializer.data)
+
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
     outlook_user = 'jason.huang@shell.fans'
