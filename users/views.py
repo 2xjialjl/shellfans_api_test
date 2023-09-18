@@ -609,16 +609,6 @@ def get_user_info(request):
             }
         }
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except jwt.DecodeError:
-        # token不存在,失敗
-        response_data = {
-            'result': False,
-            'message': 'Token error1',
-            'data': {
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-            }
-        }
-        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     user = User.objects.filter(id=payload['id']).first()
     serializer = UserSerializer(user)
     return Response(serializer.data)
