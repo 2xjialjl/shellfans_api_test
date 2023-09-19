@@ -101,23 +101,15 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            response_default_data = {
-                'result': False,
-                'message': 'Unhandled case',
-                'data': {
-                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                }
+
+        response_default_data = {
+            'result': False,
+            'message': 'Unhandled case',
+            'data': {
+                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
             }
-            return Response(response_default_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        if not phone_number:
-            response_data = {
-                'result': False,
-                'message': 'Email and phone are both empty',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        }
+        return Response(response_default_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         # 檢查email是否重複
         if not User.objects.filter(email=email).exists():
