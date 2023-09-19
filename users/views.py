@@ -91,14 +91,13 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception as e:
+            except Exception:
                 # 寄送簡訊失敗
                 response_error_data = {
                     'result': False,
                     'message': 'SMS server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'error': str(e)
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -264,13 +263,14 @@ def register_user(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except Exception:
+        except Exception as e:
             # db server error
             response_error_data = {
                 'result': False,
                 'message': 'DB server error',
                 'data': {
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'error': str(e)
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
