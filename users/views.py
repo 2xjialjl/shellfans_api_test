@@ -91,25 +91,17 @@ def register_email_or_phone(request):
                     }
                 }
                 return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception:
+            except Exception as e:
                 # 寄送簡訊失敗
                 response_error_data = {
                     'result': False,
                     'message': 'SMS server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        'error': e
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        response_default_data = {
-            'result': False,
-            'message': 'Unhandled case',
-            'data': {
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-            }
-        }
-        return Response(response_default_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         # 檢查email是否重複
         if not User.objects.filter(email=email).exists():
