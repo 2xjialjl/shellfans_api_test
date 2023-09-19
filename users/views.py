@@ -638,7 +638,7 @@ def get_user_info(request):
     #     }
     # }
 
-    return Response(name, status=status.HTTP_200_OK)
+    return Response(data, status=status.HTTP_200_OK)
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
