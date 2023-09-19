@@ -613,32 +613,31 @@ def get_user_info(request):
     serializer = UserSerializer(user)
     info = serializer.data
     name = info.get('name')
-    # name = serializer.get('name')
-    # email = serializer.get('email')
-    # gender = serializer.get('gender')
-    # birthday = serializer.get('birthday')
-    # phone_number = serializer.get('phone_number')
-    # profile_picture = serializer.get('profile_picture')
-    # level = serializer.get('level')
-    # is_email_verified = serializer.get('is_email_verified')
-    # is_phone_verified = serializer.get('is_phone_verified')
-    # response_data = {
-    #     'result': True,
-    #     'message': 'User information retrieved successfully',
-    #     'data': {
-    #         'name': name,
-    #         'email': email,
-    #         'gender': gender,
-    #         'birthday': birthday,
-    #         'phone_number': phone_number,
-    #         'profile_picture': profile_picture,
-    #         'level': level,
-    #         'is_email_verified': is_email_verified,
-    #         'is_phone_verified': is_phone_verified
-    #     }
-    # }
+    email = info.get('email')
+    gender = info.get('gender')
+    birthday = info.get('birthday')
+    phone_number = info.get('phone_number')
+    profile_picture = info.get('profile_picture')
+    level = info.get('level')
+    is_email_verified = info.get('is_email_verified')
+    is_phone_verified = info.get('is_phone_verified')
+    response_data = {
+        'result': True,
+        'message': 'User information retrieved successfully',
+        'data': {
+            'name': name,
+            'email': email,
+            'gender': gender,
+            'birthday': birthday,
+            'phone_number': phone_number,
+            'profile_picture': profile_picture,
+            'level': level,
+            'is_email_verified': is_email_verified,
+            'is_phone_verified': is_phone_verified
+        }
+    }
 
-    return Response(name, status=status.HTTP_200_OK)
+    return Response(response_data, status=status.HTTP_200_OK)
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
