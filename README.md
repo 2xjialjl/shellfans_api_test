@@ -234,7 +234,7 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Status Codes:200 OK: Verification code is valid.**
     ```json
       {
-        "result":true,"message":"User registration successful","data":{"code":200}
+        "result":true,"message":"User registration successful","data":{"code":200,"token":"abc3.5n"}
       }
      ```
 - **500 Bad Request: DB server error.**
