@@ -119,7 +119,7 @@ Welcome to Shellfans API documentation. This document provides information about
 200 OK:  User registration and verification were successful.**
     ```json
       {
-       "result":true,"message":"Successfully registered","data":{"code":200}
+       "result":true,"message":"Successfully registered","data":{"code":200,"token":"abc3.5n"}
       }
      ```
 - **500 Bad Request: DB server error.**
@@ -197,7 +197,7 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Status Codes:200 OK: Verification code is valid.**
     ```json
       {
-        "result":true,"message":"Verification code is valid","data":{"code":200}
+        "result":true,"message":"Verification code is valid","data":{"code":200,"token":"abc3.5n"}
       }
      ```
 - **400 Bad Request: Verification code has expired.**
@@ -241,5 +241,29 @@ Welcome to Shellfans API documentation. This document provides information about
     ```json
       {
         "result":true,"message":"DB server error","data":{"code":500}
+      }
+    ```
+## get_user_info
+
+- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/?token=token`
+- **HTTP Method:** POST
+- **Description:** Use token to get userinfo.
+
+### Request
+
+- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/?token=token`
+- **Request Headers:**
+  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
+### Responses
+- **Status Codes:200 OK: Verification code is valid.**
+    ```json
+      {
+        "result":true,"message":"User information retrieved successfully","data":{"name":"黃郁翔","email":"jason.huang@shell.fans","gender":"男","birthday":"1996-01-17","phone_number":null,"profile_picture":"","level":0,"is_email_verified":true,"is_phone_verified":false}
+      }
+     ```
+- **500 Bad Request: DB server error.**
+    ```json
+      {
+        "result":true,"message":"Token error","data":{"code":500}
       }
     ```
