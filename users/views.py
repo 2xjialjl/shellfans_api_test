@@ -545,7 +545,12 @@ def quick_registration(request):
                 phone_region='',
             )
             new_user.save()
-            token = jwt.encode('secret', algorithm='HS256').decode('utf-8')
+            user = get_object_or_404(User, email=email)
+            user_id = user.id
+            payload = {
+                'id': user_id
+            }
+            token = jwt.encode(payload, 'secret', algorithm='HS256')
             response_data = {
                 'result': True,
                 'message': 'User registration successful',
@@ -567,15 +572,21 @@ def quick_registration(request):
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
-        # 處理重複的email情況
-        response_error_data = {
-            'result': False,
-            'message': 'Email already exists',
+        user = get_object_or_404(User, email=email)
+        user_id = user.id
+        payload = {
+            'id': user_id
+        }
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        response_data = {
+            'result': True,
+            'message': 'Verification code is valid',
             'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
+                'code': status.HTTP_200_OK,
+                'token': token
             }
         }
-        return Response(response_error_data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(response_data, status=status.HTTP_200_OK)
 
 # 呼叫token
 @api_view(['GET'])
