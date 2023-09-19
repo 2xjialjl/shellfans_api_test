@@ -100,7 +100,7 @@ def register_email_or_phone(request):
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
                     }
                 }
-            return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         if not phone_number:
             response_data = {
                 'result': False,
@@ -272,14 +272,13 @@ def register_user(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except Exception as e:
+        except Exception:
             # db server error
             response_error_data = {
                 'result': False,
                 'message': 'DB server error',
                 'data': {
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    'error': str(e)
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -302,6 +301,8 @@ def register_user(request):
                 terms_agreement=True,
             )
             new_user.save()
+            # 刪除VerificationCode的資料
+            VerificationCode.objects.filter(user_code=email).delete()
             user = get_object_or_404(User, email=email)
             user_id = user.id
             payload = {
