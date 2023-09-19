@@ -611,6 +611,8 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     user = User.objects.filter(id=payload['id']).first()
     serializer = UserSerializer(user)
+    data = serializer.data
+    name = data.get('nmae')
     # name = serializer.get('name')
     # email = serializer.get('email')
     # gender = serializer.get('gender')
@@ -636,7 +638,7 @@ def get_user_info(request):
     #     }
     # }
 
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(name, status=status.HTTP_200_OK)
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
