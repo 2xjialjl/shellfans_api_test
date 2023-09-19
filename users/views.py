@@ -1,7 +1,7 @@
 # users/views.py
 import random
 from datetime import timedelta
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -12,6 +12,8 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer
 import jwt
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -590,6 +592,8 @@ def quick_registration(request):
 
 # 呼叫token
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_user_info(request):
     token = request.query_params.get('token')
     if not token:
@@ -602,19 +606,7 @@ def get_user_info(request):
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    try:
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        # token不存在,失敗
-        response_data = {
-            'result': False,
-            'message': 'Token error',
-            'data': {
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-            }
-        }
-        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    user = User.objects.filter(id=payload['id']).first()
+    user = request.user
     serializer = UserSerializer(user)
     info = serializer.data
     name = info.get('name')
