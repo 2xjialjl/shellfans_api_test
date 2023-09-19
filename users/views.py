@@ -465,7 +465,7 @@ def check_login_verification_code(request):
                 }
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        user = get_object_or_404(User, email=accout)
+        user = get_object_or_404(User, phone_number=accout)
         user_id = user.id
         payload = {
             'id': user_id
