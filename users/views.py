@@ -248,7 +248,7 @@ def register_user(request):
             new_user.save()
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=phone_number).delete()
-            user = get_object_or_404(User, email=email)
+            user = get_object_or_404(User, phone_number=phone_number)
             user_id = user.id
             payload = {
                 'id': user_id
