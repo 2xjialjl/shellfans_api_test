@@ -611,8 +611,8 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     user = User.objects.filter(id=payload['id']).first()
     serializer = UserSerializer(user)
-    data = serializer.data
-    name = data.get('nmae')
+    info = serializer.data
+    name = info.get('name')
     # name = serializer.get('name')
     # email = serializer.get('email')
     # gender = serializer.get('gender')
