@@ -616,6 +616,7 @@ def get_user_info(request):
         # 获取 Token 部分
         _, token = authorization_parts
         token = str(token).replace("Bearer ", '')
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         # Token過期
         response_data = {
