@@ -602,9 +602,20 @@ def get_user_info(request):
         }
         return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
     try:
-        _, token = authorization_header.split()
+        authorization_parts = authorization_header.split()
+        if len(authorization_parts) != 2:
+            response_data = {
+                'result': False,
+                'message': 'Invalid Authorization header format',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        # 获取 Token 部分
+        _, token = authorization_parts
         token = str(token).replace("Bearer ", '')
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         # Token過期
         response_data = {
