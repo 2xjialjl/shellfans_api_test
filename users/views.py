@@ -603,7 +603,9 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
     try:
         # 從Authorization中提取Token
-        _, token = authorization_header.split()
+        token_prefix, token = authorization_header.split()
+        if token_prefix != 'Bearer':
+            raise jwt.DecodeError('Invalid token prefix')
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         # Token過期
