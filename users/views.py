@@ -2,7 +2,6 @@
 import random
 from datetime import timedelta
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -596,7 +595,51 @@ def quick_registration(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_info(request):
-    user = request.user
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        response_data = {
+            'result': False,
+            'message': 'Token is missing in the headers',
+            'data': {
+                'code': status.HTTP_401_UNAUTHORIZED,
+            }
+        }
+        return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
+    try:
+        # 從Authorization中提取Token
+        _, token = authorization_header.split()
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        # Token過期
+        response_data = {
+            'result': False,
+            'message': 'Token error',
+            'data': {
+                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
+        }
+        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except jwt.DecodeError:
+        # Token無效
+        response_data = {
+            'result': False,
+            'message': 'Invalid token',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+    user = User.objects.filter(id=payload['id']).first()
+    if not user:
+        # 找不到user
+        response_data = {
+            'result': False,
+            'message': 'User not found',
+            'data': {
+                'code': status.HTTP_404_NOT_FOUND,
+            }
+        }
+        return Response(response_data, status=status.HTTP_404_NOT_FOUND)
     serializer = UserSerializer(user)
     info = serializer.data
     name = info.get('name')
