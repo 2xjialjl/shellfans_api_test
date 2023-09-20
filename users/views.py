@@ -595,17 +595,6 @@ def quick_registration(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_info(request):
-    token = request.query_params.get('token')
-    if not token:
-        # token不存在,失敗
-        response_data = {
-            'result': False,
-            'message': 'Invalid token',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     user = request.user
     serializer = UserSerializer(user)
     info = serializer.data
