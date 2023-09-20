@@ -603,8 +603,7 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
     try:
         # 從Authorization中提取Token
-        _, token = authorization_header.split().replace('Bearer ', '')
-
+        _, token = authorization_header.split()
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         # Token過期
@@ -660,7 +659,8 @@ def get_user_info(request):
             'profile_picture': profile_picture,
             'level': level,
             'is_email_verified': is_email_verified,
-            'is_phone_verified': is_phone_verified
+            'is_phone_verified': is_phone_verified,
+            'token': token
         }
     }
 
