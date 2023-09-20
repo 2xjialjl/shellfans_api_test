@@ -604,8 +604,6 @@ def get_user_info(request):
     try:
         # 從Authorization中提取Token
         token_prefix, token = authorization_header.split()
-        if token_prefix != 'Bearer':
-            raise jwt.DecodeError('Invalid token prefix')
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         # Token過期
@@ -662,7 +660,8 @@ def get_user_info(request):
             'level': level,
             'is_email_verified': is_email_verified,
             'is_phone_verified': is_phone_verified,
-            'token': token
+            'authorization_header': authorization_header,
+            'token':token
         }
     }
 
