@@ -1,7 +1,7 @@
 # users/views.py
 import random
 from datetime import timedelta
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -12,8 +12,6 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer
 import jwt
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -592,8 +590,6 @@ def quick_registration(request):
 
 # 呼叫token
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def get_user_info(request):
     authorization_header = request.headers.get('Authorization')
     if not authorization_header:
