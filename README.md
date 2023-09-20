@@ -229,6 +229,7 @@ Welcome to Shellfans API documentation. This document provides information about
   {
     "email": "user@example.com"
     "name" "jason"
+    "third_party_registration_source":"0"
   }
 ### Responses
 - **Status Codes:200 OK: Verification code is valid.**

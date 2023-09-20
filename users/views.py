@@ -527,6 +527,7 @@ def check_login_verification_code(request):
 def quick_registration(request):
     data = request.data
     email = data.get('email')
+    third_party_registration_source = data.get('third_party_registration_source')
     # 檢查email是否重複
     if not User.objects.filter(email=email).exists():
         try:
@@ -543,6 +544,7 @@ def quick_registration(request):
                 privacy_agreement=False,
                 terms_agreement=False,
                 phone_region='',
+                third_party_registration_source=third_party_registration_source
             )
             new_user.save()
             user = get_object_or_404(User, email=email)
@@ -613,7 +615,7 @@ def get_user_info(request):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-        # 获取 Token 部分
+        # 獲取 Token
         _, token = authorization_parts
         token = str(token).replace("Bearer ", '')
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
@@ -672,8 +674,6 @@ def get_user_info(request):
             'level': level,
             'is_email_verified': is_email_verified,
             'is_phone_verified': is_phone_verified,
-            'authorization_header': authorization_header,
-            'token':token
         }
     }
 
