@@ -11,4 +11,5 @@ ENV DJANGO_SETTINGS_MODULE=myproject.settings
 ENV DATABASE_URL=mysql://user:password@/database
 ENV TZ=Asia/Taipei
 EXPOSE 8080
+CMD ["python", "manage.py", "migrate"]
 CMD ["gunicorn", "myproject.wsgi", "--bind", "0.0.0.0:8080", "--workers", "3"]
