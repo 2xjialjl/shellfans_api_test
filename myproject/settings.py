@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
-    'rest_framework_simplejwt',
     'rest_framework.authtoken'
 ]
 
@@ -154,9 +153,4 @@ CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']  # 允許的HTTP標頭
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-}
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
 }
