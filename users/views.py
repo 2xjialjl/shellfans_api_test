@@ -603,7 +603,7 @@ def get_user_info(request):
         return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
     try:
         # 從Authorization中提取Token
-        token_prefix, token = authorization_header.split()
+        _, token = authorization_header.split()
         token = str(token).replace("['Bearer ", '').replace("']", '')
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
