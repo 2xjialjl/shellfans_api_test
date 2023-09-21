@@ -661,6 +661,9 @@ def get_user_info(request):
     level = info.get('level')
     is_email_verified = info.get('is_email_verified')
     is_phone_verified = info.get('is_phone_verified')
+    third_party_registration_source = info.get('third_party_registration_source')
+    backup_email = info.get('backup_email')
+    is_backup_email_verified = info.get('is_backup_email_verified')
     response_data = {
         'result': True,
         'message': 'User information retrieved successfully',
@@ -674,6 +677,9 @@ def get_user_info(request):
             'level': level,
             'is_email_verified': is_email_verified,
             'is_phone_verified': is_phone_verified,
+            'third_party_registration_source': third_party_registration_source,
+            'backup_email': backup_email,
+            'is_backup_email_verified': is_backup_email_verified
         }
     }
 
