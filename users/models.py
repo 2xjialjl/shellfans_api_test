@@ -18,6 +18,7 @@ class User(models.Model):
     third_party_registration_source =models.CharField(max_length=255, null=True, blank=True)
     backup_email = models.EmailField(max_length=254, null=True, blank=True)
     is_backup_email_verified = models.BooleanField(default=False)
+    security_code = models.CharField(max_length=4, null=True, blank=True)
 class VerificationCode(models.Model):
     user_code = models.CharField(max_length=255)
     code = models.CharField(max_length=6)

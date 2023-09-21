@@ -246,13 +246,16 @@ Welcome to Shellfans API documentation. This document provides information about
     ```
 ## get_user_info
 
-- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/?token=token`
-- **HTTP Method:** POST
+- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/`
+- **HTTP Method:** GET
 - **Description:** Use token to get userinfo.
-
+- **Request Header:**
+  ```json
+  {
+    "Authorization": "uxsdsFSD200.sd"
 ### Request
 
-- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/?token=token`
+- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/`
 - **Request Headers:**
   - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 ### Responses
