@@ -740,18 +740,25 @@ def edit_profiles(request):
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'PUT':
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response_data = {
-                'result': True,
-                'message': 'Verification code is valid',
-                'data': {
-                    'code': status.HTTP_200_OK,
-                }
+        name = request.data.get('name')
+        gender = request.data.get('gender')
+        phone_number = request.data.get('phone_number')
+        backup_email = request.data.get('backup_email')
+        security_code = request.data.get('security_code')
+        user.name = name
+        user.gender = gender
+        user.phone_number = phone_number
+        user.backup_email = backup_email
+        user.security_code = security_code
+        user.save()
+        response_data = {
+            'result': True,
+            'message': 'Verification code is valid',
+            'data': {
+                'code': status.HTTP_200_OK,
             }
-            return Response(response_data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
     outlook_user = 'jason.huang@shell.fans'
