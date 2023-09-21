@@ -15,6 +15,9 @@ class User(models.Model):
     privacy_agreement = models.BooleanField(default=False)
     terms_agreement = models.BooleanField(default=False)
     phone_region = models.CharField(max_length=10, blank=True, null=True)
+    third_party_registration_source =models.CharField(max_length=255, null=True, blank=True)
+    backup_email = models.EmailField(max_length=254, null=True, blank=True)
+    is_backup_email_verified = models.BooleanField(default=False)
 class VerificationCode(models.Model):
     user_code = models.CharField(max_length=255)
     code = models.CharField(max_length=6)
