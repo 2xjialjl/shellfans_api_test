@@ -262,7 +262,7 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Status Codes:200 OK: Verification code is valid.**
     ```json
       {
-        "result":true,"message":"User information retrieved successfully","data":{"name":"黃郁翔","email":"jason.huang@shell.fans","gender":"男","birthday":"1996-01-17","phone_number":null,"profile_picture":"","level":0,"is_email_verified":true,"is_phone_verified":false}
+        "result":true,"message":"User information retrieved successfully","data":{}
       }
      ```
 - **500 Bad Request: DB server error.**

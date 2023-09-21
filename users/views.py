@@ -662,6 +662,7 @@ def get_user_info(request):
     third_party_registration_source = info.get('third_party_registration_source')
     backup_email = info.get('backup_email')
     is_backup_email_verified = info.get('is_backup_email_verified')
+    security_code = info.get('security_code')
     response_data = {
         'result': True,
         'message': 'User information retrieved successfully',
@@ -677,11 +678,21 @@ def get_user_info(request):
             'is_phone_verified': is_phone_verified,
             'third_party_registration_source': third_party_registration_source,
             'backup_email': backup_email,
-            'is_backup_email_verified': is_backup_email_verified
+            'is_backup_email_verified': is_backup_email_verified,
+            'security_code':security_code
         }
     }
 
     return Response(response_data, status=status.HTTP_200_OK)
+
+# @api_view(['PUT'])
+# def edit_profiles(request):
+#     data = request.data
+#     edit_name = data.get('edit_name')
+#     edit_gender = data.get('edit_gender')
+#     edit_security_code = data.get('edit_security_code')
+
+
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
