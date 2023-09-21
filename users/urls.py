@@ -12,6 +12,6 @@ urlpatterns = [
     path('check_login_verification_code/',views.check_login_verification_code,name='check_login_verification_code'),
     path('quick_registration/',views.quick_registration,name='quick_registration'),
     path('get_user_info/',views.get_user_info,name='get_user_info'),
-    #path('edit_profiles/',views.edit_profiles,name='edit_profiles'),
+    path('edit_profiles/',views.edit_profiles,name='edit_profiles'),
     path('fb_crawler/',views.fb_crawler,name='fb_crawler'),
 ]

@@ -244,6 +244,7 @@ def register_user(request):
                 privacy_agreement=True,
                 terms_agreement=True,
                 phone_region=data.get('country_code'),
+                third_party_registration_source='0'
             )
             new_user.save()
             # 刪除VerificationCode的資料
@@ -259,18 +260,17 @@ def register_user(request):
                 'message': 'User registration successful',
                 'data': {
                     'code': status.HTTP_200_OK,
-                    'token':token
+                    'token': token
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except Exception as e:
+        except Exception:
             # db server error
             response_error_data = {
                 'result': False,
                 'message': 'DB server error',
                 'data': {
                     'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    'error': str(e)
                 }
             }
             return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -291,6 +291,7 @@ def register_user(request):
                 is_phone_verified=False,
                 privacy_agreement=True,
                 terms_agreement=True,
+                third_party_registration_source='0'
             )
             new_user.save()
             # 刪除VerificationCode的資料
@@ -685,15 +686,72 @@ def get_user_info(request):
 
     return Response(response_data, status=status.HTTP_200_OK)
 
-# @api_view(['PUT'])
-# def edit_profiles(request):
-#     data = request.data
-#     edit_name = data.get('edit_name')
-#     edit_gender = data.get('edit_gender')
-#     edit_security_code = data.get('edit_security_code')
+@api_view(['PUT'])
+def edit_profiles(request):
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        response_data = {
+            'result': False,
+            'message': 'Token is missing in the headers',
+            'data': {
+                'code': status.HTTP_401_UNAUTHORIZED,
+            }
+        }
+        return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
+    try:
+        authorization_parts = authorization_header.split()
+        if len(authorization_parts) != 2:
+            response_data = {
+                'result': False,
+                'message': 'Invalid Authorization header format',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-
-
+        # 獲取 Token
+        _, token = authorization_parts
+        token = str(token).replace("Bearer ", '')
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        # Token過期
+        response_data = {
+            'result': False,
+            'message': 'Token error',
+            'data': {
+                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
+        }
+        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except jwt.DecodeError:
+        # Token無效
+        response_data = {
+            'result': False,
+            'message': 'Invalid token',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+    user_id = payload.get('id')
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'PUT':
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            response_data = {
+                'result': True,
+                'message': 'Verification code is valid',
+                'data': {
+                    'code': status.HTTP_200_OK,
+                }
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
     outlook_user = 'jason.huang@shell.fans'

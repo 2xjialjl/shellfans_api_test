@@ -187,8 +187,7 @@ Welcome to Shellfans API documentation. This document provides information about
     "account": "09123456789"
     "verification_code" "123456"
   }
-
-  ```json
+  
   {
     "account": "user@example.com"
     "verification_code" "123456"
