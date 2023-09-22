@@ -747,78 +747,78 @@ def edit_profiles(request):
         if 'gender' in request.data:
             gender = request.data.get('gender')
             user.gender = gender
-        if 'email' in request.data:
-            email = request.data.get('email')
-            code = request.data.get('verification_codes')
-            verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
-            if not verification_codes.exists():
-                # 驗證碼不存在,驗證失敗
-                response_data = {
-                    'result': False,
-                    'message': 'Invalid verification code',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            # 驗證碼是否過期
-            now = timezone.now()
-            valid_verification_codes = verification_codes.filter(expiration_time__gte=now)
-            if not valid_verification_codes.exists():
-                response_data = {
-                    'result': False,
-                    'message': 'Verification code has expired',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            if User.objects.filter(email=email).exists():
-                response_data = {
-                    'result': False,
-                    'message': 'Email is empty',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            user.email = email
-        if 'backup_email' in request.data:
-            backup_email = request.data.get('backup_email')
-            code = request.data.get('verification_codes')
-            verification_codes = VerificationCode.objects.filter(user_code=backup_email, code=code)
-            if not verification_codes.exists():
-                # 驗證碼不存在,驗證失敗
-                response_data = {
-                    'result': False,
-                    'message': 'Invalid verification code',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            # 驗證碼是否過期
-            now = timezone.now()
-            valid_verification_codes = verification_codes.filter(expiration_time__gte=now)
-            if not valid_verification_codes.exists():
-                response_data = {
-                    'result': False,
-                    'message': 'Verification code has expired',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            if User.objects.filter(backup_email=backup_email).exists():
-                response_data = {
-                    'result': False,
-                    'message': 'Email is empty',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            user.backup_email = backup_email
+        # if 'email' in request.data:
+        #     email = request.data.get('email')
+        #     code = request.data.get('verification_codes')
+        #     verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
+        #     if not verification_codes.exists():
+        #         # 驗證碼不存在,驗證失敗
+        #         response_data = {
+        #             'result': False,
+        #             'message': 'Invalid verification code',
+        #             'data': {
+        #                 'code': status.HTTP_400_BAD_REQUEST,
+        #             }
+        #         }
+        #         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        #     # 驗證碼是否過期
+        #     now = timezone.now()
+        #     valid_verification_codes = verification_codes.filter(expiration_time__gte=now)
+        #     if not valid_verification_codes.exists():
+        #         response_data = {
+        #             'result': False,
+        #             'message': 'Verification code has expired',
+        #             'data': {
+        #                 'code': status.HTTP_400_BAD_REQUEST,
+        #             }
+        #         }
+        #         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        #     if User.objects.filter(email=email).exists():
+        #         response_data = {
+        #             'result': False,
+        #             'message': 'Email is empty',
+        #             'data': {
+        #                 'code': status.HTTP_400_BAD_REQUEST,
+        #             }
+        #         }
+        #         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        #     user.email = email
+        # if 'backup_email' in request.data:
+        #     backup_email = request.data.get('backup_email')
+        #     code = request.data.get('verification_codes')
+        #     verification_codes = VerificationCode.objects.filter(user_code=backup_email, code=code)
+        #     if not verification_codes.exists():
+        #         # 驗證碼不存在,驗證失敗
+        #         response_data = {
+        #             'result': False,
+        #             'message': 'Invalid verification code',
+        #             'data': {
+        #                 'code': status.HTTP_400_BAD_REQUEST,
+        #             }
+        #         }
+        #         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        #     # 驗證碼是否過期
+        #     now = timezone.now()
+        #     valid_verification_codes = verification_codes.filter(expiration_time__gte=now)
+        #     if not valid_verification_codes.exists():
+        #         response_data = {
+        #             'result': False,
+        #             'message': 'Verification code has expired',
+        #             'data': {
+        #                 'code': status.HTTP_400_BAD_REQUEST,
+        #             }
+        #         }
+        #         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        #     if User.objects.filter(backup_email=backup_email).exists():
+        #         response_data = {
+        #             'result': False,
+        #             'message': 'Email is empty',
+        #             'data': {
+        #                 'code': status.HTTP_400_BAD_REQUEST,
+        #             }
+        #         }
+        #         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        #     user.backup_email = backup_email
         security_code = request.data.get('security_code')
         user.security_code = security_code
         user.save()
