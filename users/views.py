@@ -744,12 +744,16 @@ def edit_profiles(request):
         if 'gender' in request.data:
             gender = request.data.get('gender')
             user.gender = gender
-        phone_number = request.data.get('phone_number')
-        backup_email = request.data.get('backup_email')
+        if 'phone_number' in request.data:
+            phone_number = request.data.get('phone_number')
+            user.phone_number = phone_number
+            user.is_phone_verified = '1'
+        if 'backup_email' in request.data:
+            backup_email = request.data.get('backup_email')
+            user.backup_email = backup_email
+            user.is_backup_email_verified = '1'
         security_code = request.data.get('security_code')
         user.name = name
-        user.phone_number = phone_number
-        user.backup_email = backup_email
         user.security_code = security_code
         user.save()
         response_data = {

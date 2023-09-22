@@ -144,8 +144,6 @@ Welcome to Shellfans API documentation. This document provides information about
   {
     "account": "user@example.com",
   }
-
-  ```json
   {
     "account": "09123456789",
   }
@@ -233,9 +231,9 @@ Welcome to Shellfans API documentation. This document provides information about
 - **explain data:**
   ```json
   {
-    "third_party_registration_source": 0(normal),
-    "third_party_registration_source": 1(Google),
-    "third_party_registration_source": 2(FB)
+    "third_party_registration_source": "0(normal)",
+    "third_party_registration_source": "1(Google)",
+    "third_party_registration_source": "2(FB)"
   }
 ### Responses
 - **Status Codes:200 OK: Verification code is valid.**
@@ -267,27 +265,27 @@ Welcome to Shellfans API documentation. This document provides information about
 - **explain data:**
   ```json
   {
-    "name": user name,
-    "email": user email,
-    "gender": user gender,
-    "birthday": user birthday,
-    "phone_number": user phone_number,
-    "profile_picture": user headshot,
-    "level": 0(normal),
-    "level": 1(免費會員),
-    "level": 2(高級會員),
-    "level": 3(頂級會員),
-    "is_email_verified":true(email已驗證),
-    "is_email_verified":false(email未驗證),
-    "is_phone_verified":true(phone已驗證),
-    "is_phone_verified":false(phone未驗證),
-    "third_party_registration_source": 0(normal),
-    "third_party_registration_source": 1(Google),
-    "third_party_registration_source": 2(FB),
-    "backup_email": if third_party_registration_source email is not use, user can add  backup_email,
-    "is_backup_email_verified":true(email已驗證),
-    "is_backup_email_verified":false(email未驗證),
-    "security_code":download bill details password, The security code consists of a combination of 4 alphanumeric characters
+    "name": "user name",
+    "email": "user email",
+    "gender": "user gender",
+    "birthday": "user birthday",
+    "phone_number": "user phone_number",
+    "profile_picture": "user headshot",
+    "level": "0(normal)",
+    "level": "1(免費會員)",
+    "level": "2(高級會員)",
+    "level": "3(頂級會員)",
+    "is_email_verified": "true(email已驗證)",
+    "is_email_verified": "false(email未驗證)",
+    "is_phone_verified": "true(phone已驗證)",
+    "is_phone_verified": "false(phone未驗證)",
+    "third_party_registration_source": "0(normal)",
+    "third_party_registration_source": "1(Google)",
+    "third_party_registration_source": "2(FB)",
+    "backup_email": "if third_party_registration_source email is not use, user can add  backup_email.",
+    "is_backup_email_verified": "true(email已驗證)",
+    "is_backup_email_verified": "false(email未驗證)",
+    "security_code": "download bill details password, The security code consists of a combination of 4 alphanumeric characters."
   }
 ### Responses
 - **Status Codes:200 OK: Verification code is valid.**
