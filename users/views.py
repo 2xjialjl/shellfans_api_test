@@ -743,11 +743,11 @@ def edit_profiles(request):
         name = request.data.get('name')
         if 'gender' in request.data:
             gender = request.data.get('gender')
+            user.gender = gender
         phone_number = request.data.get('phone_number')
         backup_email = request.data.get('backup_email')
         security_code = request.data.get('security_code')
         user.name = name
-        user.gender = gender
         user.phone_number = phone_number
         user.backup_email = backup_email
         user.security_code = security_code

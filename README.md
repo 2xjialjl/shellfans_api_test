@@ -230,6 +230,13 @@ Welcome to Shellfans API documentation. This document provides information about
     "name" "jason"
     "third_party_registration_source":"0"
   }
+- **explain data:**
+  ```json
+  {
+    "third_party_registration_source": 0(normal),
+    "third_party_registration_source": 1(Google),
+    "third_party_registration_source": 2(FB)
+  }
 ### Responses
 - **Status Codes:200 OK: Verification code is valid.**
     ```json
@@ -251,17 +258,42 @@ Welcome to Shellfans API documentation. This document provides information about
 - **Request Header:**
   ```json
   {
-    "Authorization": "uxsdsFSD200.sd"
+    "Authorization": "uxsdsFSD200.sddsfDSVZX"
 ### Request
 
 - **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/`
 - **Request Headers:**
-  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
+  - `Authorization: YOUR_API_TOKEN`
+- **explain data:**
+  ```json
+  {
+    "name": user name,
+    "email": user email,
+    "gender": user gender,
+    "birthday": user birthday,
+    "phone_number": user phone_number,
+    "profile_picture": user headshot,
+    "level": 0(normal),
+    "level": 1(免費會員),
+    "level": 2(高級會員),
+    "level": 3(頂級會員),
+    "is_email_verified":true(email已驗證),
+    "is_email_verified":false(email未驗證),
+    "is_phone_verified":true(phone已驗證),
+    "is_phone_verified":false(phone未驗證),
+    "third_party_registration_source": 0(normal),
+    "third_party_registration_source": 1(Google),
+    "third_party_registration_source": 2(FB),
+    "backup_email": if third_party_registration_source email is not use, user can add  backup_email,
+    "is_backup_email_verified":true(email已驗證),
+    "is_backup_email_verified":false(email未驗證),
+    "security_code":download bill details password, The security code consists of a combination of 4 alphanumeric characters
+  }
 ### Responses
 - **Status Codes:200 OK: Verification code is valid.**
     ```json
       {
-        "result":true,"message":"User information retrieved successfully","data":{}
+        "result":true,"message":"User information retrieved successfully","data":{"name":"jackssd1232","email":"jason.huang@shell.fans","gender":"男","birthday":"1996-01-17","phone_number":null,"profile_picture":"","level":0,"is_email_verified":true,"is_phone_verified":false,"third_party_registration_source":null,"backup_email":null,"is_backup_email_verified":false,"security_code":null}
       }
      ```
 - **500 Bad Request: DB server error.**
