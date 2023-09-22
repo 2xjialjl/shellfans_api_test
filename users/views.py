@@ -879,7 +879,7 @@ def edit_profiles_phone_email_backup_email(request):
     email = request.data.get('email')
     phone_number = request.data.get('phone_number')
     dackup_email = request.data.get('dackup_email')
-    verification_code = request.data.get('verification_code')
+    code = request.data.get('verification_code')
     authorization_header = request.headers.get('Authorization')
     if not authorization_header:
         response_data = {
@@ -927,7 +927,14 @@ def edit_profiles_phone_email_backup_email(request):
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     user_id = payload.get('id')
-
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'PUT':
+        if 'email' in request.data:
+            email = request.data.get('email')
+            user.email = email
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):

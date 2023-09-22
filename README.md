@@ -11,8 +11,6 @@ Welcome to Shellfans API documentation. This document provides information about
 ### Request
 
 - **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/register_email_or_phone/`
-- **Request Headers:**
-  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
 - - **if your input is phone**
   ```json
@@ -53,8 +51,6 @@ Welcome to Shellfans API documentation. This document provides information about
 ### Request
 
 - **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_register_verification_code/`
-- **Request Headers:**
-  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
 - - **if your input is phone**
   ```json
@@ -137,8 +133,6 @@ Welcome to Shellfans API documentation. This document provides information about
 ### Request
 
 - **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/login_email_or_phone/`
-- **Request Headers:**
-  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **you can input phone or email**
   ```json
   {
@@ -176,8 +170,6 @@ Welcome to Shellfans API documentation. This document provides information about
 ### Request
 
 - **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/check_login_verification_code/`
-- **Request Headers:**
-  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
 - - **you can input phone or email**
   ```json
@@ -219,8 +211,6 @@ Welcome to Shellfans API documentation. This document provides information about
 ### Request
 
 - **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/quick_registration/`
-- **Request Headers:**
-  - `Authorization: Token YOUR_API_TOKEN` (Authentication required)
 - **Request Body:**
   ```json
   {
@@ -257,6 +247,7 @@ Welcome to Shellfans API documentation. This document provides information about
   ```json
   {
     "Authorization": "uxsdsFSD200.sddsfDSVZX"
+  }
 ### Request
 
 - **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/get_user_info/`
@@ -298,5 +289,86 @@ Welcome to Shellfans API documentation. This document provides information about
     ```json
       {
         "result":true,"message":"Token error","data":{"code":500}
+      }
+    ```
+  
+## edit_profiles
+
+- **Endpoint:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/edit_profiles/`
+- **HTTP Method:** PUT
+- **Description:** This api is edit user data EX:name,gender,security_code.
+
+### Request
+
+- **URL:** ` https://shellfans-api-test-rr7tb4kqva-de.a.run.app/api/edit_profiles/`
+- **Request Headers:**
+  ```json
+  {
+    "Authorization": "uxsdsFSD200.sddsfDSVZX"
+  }
+- **Request Body:**
+  ```json
+  {
+    "name": "user@example.com"
+    "gender": "0"
+    "security_code":"EX18"
+  }
+- **explain data:**
+  ```json
+  {
+    "name": "user name",
+    "gender": "0(男)",
+    "gender": "1(女)",
+    "gender": "2(不透露)",
+    "security_code": "The security code consists of a combination of 4 alphanumeric characters."
+  }
+### Responses
+- **Status Codes:200 OK: Verification code is valid.**
+    ```json
+      {
+        "result":true,"message":"User registration successful","data":{"code":200}
+      }
+     ```
+- **500 Bad Request: DB server error.**
+    ```json
+      {
+        "result":true,"message":"DB server error","data":{"code":500}
+      }
+    ```
+## edit_profiles_sent_verification_code
+
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/edit_profiles_sent_verification_code/`
+- **HTTP Method:** POST
+- **Description:** This is to send a login verification code.
+
+### Request
+
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/edit_profiles_sent_verification_code/`
+- **you can input phone or email**
+  ```json
+  {
+    "account": "user@example.com",
+  }
+  {
+    "account": "09123456789",
+  }
+### Responses
+- **Status Codes:
+200 OK: Sending email successfully.**
+    ```json
+      {
+        "result":true,"message":"Sending email successfully","data":{"code":200}
+      }
+     ```
+- **400 Bad Request: The email address is not exist in the system.**
+    ```json
+      {
+        "result":true,"message":"Email does not exist","data":{"code":400}
+      }
+    ```
+- **500 Bad Request: The email address server error.**
+    ```json
+      {
+        "result":true,"message":"Email server error","data":{"code":400}
       }
     ```
