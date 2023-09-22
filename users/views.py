@@ -741,12 +741,85 @@ def edit_profiles(request):
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'PUT':
-        name = request.data.get('name')
+        if 'name' in request.data:
+            name = request.data.get('name')
+            user.name = name
         if 'gender' in request.data:
             gender = request.data.get('gender')
             user.gender = gender
+        if 'email' in request.data:
+            email = request.data.get('email')
+            code = request.data.get('verification_codes')
+            verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
+            if not verification_codes.exists():
+                # 驗證碼不存在,驗證失敗
+                response_data = {
+                    'result': False,
+                    'message': 'Invalid verification code',
+                    'data': {
+                        'code': status.HTTP_400_BAD_REQUEST,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            # 驗證碼是否過期
+            now = timezone.now()
+            valid_verification_codes = verification_codes.filter(expiration_time__gte=now)
+            if not valid_verification_codes.exists():
+                response_data = {
+                    'result': False,
+                    'message': 'Verification code has expired',
+                    'data': {
+                        'code': status.HTTP_400_BAD_REQUEST,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            if User.objects.filter(email=email).exists():
+                response_data = {
+                    'result': False,
+                    'message': 'Email is empty',
+                    'data': {
+                        'code': status.HTTP_400_BAD_REQUEST,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            user.email = email
+        if 'backup_email' in request.data:
+            backup_email = request.data.get('backup_email')
+            code = request.data.get('verification_codes')
+            verification_codes = VerificationCode.objects.filter(user_code=backup_email, code=code)
+            if not verification_codes.exists():
+                # 驗證碼不存在,驗證失敗
+                response_data = {
+                    'result': False,
+                    'message': 'Invalid verification code',
+                    'data': {
+                        'code': status.HTTP_400_BAD_REQUEST,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            # 驗證碼是否過期
+            now = timezone.now()
+            valid_verification_codes = verification_codes.filter(expiration_time__gte=now)
+            if not valid_verification_codes.exists():
+                response_data = {
+                    'result': False,
+                    'message': 'Verification code has expired',
+                    'data': {
+                        'code': status.HTTP_400_BAD_REQUEST,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            if User.objects.filter(backup_email=backup_email).exists():
+                response_data = {
+                    'result': False,
+                    'message': 'Email is empty',
+                    'data': {
+                        'code': status.HTTP_400_BAD_REQUEST,
+                    }
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            user.backup_email = backup_email
         security_code = request.data.get('security_code')
-        user.name = name
         user.security_code = security_code
         user.save()
         response_data = {
@@ -757,184 +830,6 @@ def edit_profiles(request):
             }
         }
         return Response(response_data, status=status.HTTP_200_OK)
-
-# 編輯個人email或手機
-@api_view(['POST'])
-def edit_profiles_sent_verification_code(request):
-    accout = request.data.get('account')
-    if '@' not in accout:
-        # 檢查有無手機號碼
-        if not User.objects.filter(phone_number=accout).exists():
-            user = User.objects.get(phone_number=accout)
-            phone_number = user.phone_number
-            country_code = user.phone_region
-            sent_phone_number = convert_country_code(phone_number, country_code)
-            # 生成隨機的6位數驗證碼
-            verification_code = str(random.randint(100000, 999999))
-            # 當前時間
-            now = datetime.now()
-            # 當前時間+10分鐘
-            expiration_time = now + timedelta(minutes=10)
-            # 發送簡訊驗證碼
-            sms_host = "api.e8d.tw"
-            send_sms_url = f"https://{sms_host}/API21/HTTP/sendSMS.ashx"
-            user_id = "sfrd"
-            password = "3nmWyb|iA5V2Ub"
-            subject = "唄粉科技"
-            content = f'你的簡訊驗證碼為: {verification_code}'
-            mobile = sent_phone_number
-
-            post_data = {
-                "UID": user_id,
-                "PWD": password,
-                "SB": subject,
-                "MSG": content,
-                "DEST": mobile,
-            }
-            try:
-                # 寄送驗證碼
-                response = requests.post(send_sms_url, data=post_data)
-                # 存到db
-                verification_code_db = VerificationCode(user_code=phone_number, code=verification_code, expiration_time=expiration_time)
-                verification_code_db.save()
-                # 寄送簡訊的狀態
-                response.raise_for_status()
-                # 寄送簡訊成功
-                response_correct_data = {
-                    'result': True,
-                    'message': 'Sending SMS successfully',
-                    'data': {
-                        'code': status.HTTP_200_OK,
-                    }
-                }
-                return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception:
-                # 寄送簡訊失敗
-                response_error_data = {
-                    'result': False,
-                    'message': 'SMS server error',
-                    'data': {
-                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    }
-                }
-                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            response_data = {
-                'result': False,
-                'message': 'Phone is empty',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        # 檢查有無email
-        if not User.objects.filter(email=accout).exists():
-            # 生成隨機的6位數驗證碼
-            verification_code = str(random.randint(100000, 999999))
-            # 當前時間
-            now = datetime.now()
-            # 當前時間+10分鐘
-            expiration_time = now + timedelta(minutes=10)
-            # 發送email
-            html_message = render_to_string('email_login_template.html', {'verification_code': verification_code})
-            subject = 'shellfans 登入驗證信'
-            from_email = 'hello@shell.fans'
-            recipient_list = [accout]
-            try:
-                send_mail(subject, html_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
-                # 存到db
-                verification_code_db = VerificationCode(user_code=accout, code=verification_code, expiration_time=expiration_time)
-                verification_code_db.save()
-                response_correct_data = {
-                    'result': True,
-                    'message': 'Sending email successfully',
-                    'data': {
-                        'code': status.HTTP_200_OK,
-                    }
-                }
-                return Response(response_correct_data, status=status.HTTP_200_OK)
-            except Exception:
-                response_data = {
-                    'result': False,
-                    'message': 'Email or Database server error',
-                    'data': {
-                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            response_data = {
-                'result': False,
-                'message': 'Email is empty',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-# 編輯個人資料的檢查驗證碼
-@api_view(['PUT'])
-def edit_profiles_phone_email_backup_email(request):
-    email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
-    dackup_email = request.data.get('dackup_email')
-    code = request.data.get('verification_code')
-    authorization_header = request.headers.get('Authorization')
-    if not authorization_header:
-        response_data = {
-            'result': False,
-            'message': 'Token is missing in the headers',
-            'data': {
-                'code': status.HTTP_401_UNAUTHORIZED,
-            }
-        }
-        return Response(response_data, status=status.HTTP_401_UNAUTHORIZED)
-    try:
-        authorization_parts = authorization_header.split()
-        if len(authorization_parts) != 2:
-            response_data = {
-                'result': False,
-                'message': 'Invalid Authorization header format',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
-            }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-        # 獲取 Token
-        _, token = authorization_parts
-        token = str(token).replace("Bearer ", '')
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        # Token過期
-        response_data = {
-            'result': False,
-            'message': 'Token error',
-            'data': {
-                'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-            }
-        }
-        return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except jwt.DecodeError:
-        # Token無效
-        response_data = {
-            'result': False,
-            'message': 'Invalid token',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    user_id = payload.get('id')
-    try:
-        user = User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'PUT':
-        if 'email' in request.data:
-            email = request.data.get('email')
-            user.email = email
 
 # 爬蟲寄出錯誤信件
 def send_email(subject, body, to_email):
