@@ -741,7 +741,8 @@ def edit_profiles(request):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'PUT':
         name = request.data.get('name')
-        gender = request.data.get('gender')
+        if 'gender' in request.data:
+            gender = request.data.get('gender')
         phone_number = request.data.get('phone_number')
         backup_email = request.data.get('backup_email')
         security_code = request.data.get('security_code')
