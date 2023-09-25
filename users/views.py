@@ -534,7 +534,7 @@ def quick_registration(request):
             new_user = User(
                 email=email,
                 name=data.get('name'),
-                gender='',
+                gender=None,
                 birthday=None,
                 phone_number=None,
                 profile_picture='',
@@ -688,7 +688,7 @@ def get_user_info(request):
 
 # 編輯個人資料的寄發驗證信或簡訊
 @api_view(['POST'])
-def edit_profiles_email_or_phone(request):
+def edit_profiles_sent_verification_code(request):
     accout = request.data.get('account')
     if '@' not in accout:
         # 檢查有無手機號碼
