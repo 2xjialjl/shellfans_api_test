@@ -698,6 +698,7 @@ def refresh_token(request):
             'message': 'Token is null',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
+                'refresh_token': refresh_token
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
