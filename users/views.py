@@ -701,23 +701,22 @@ def refresh_token(request):
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        authorization_parts = authorization_header.split()
-        if len(authorization_parts) != 2:
-            response_data = {
-                'result': False,
-                'message': 'Invalid Authorization header format',
-                'data': {
-                    'code': status.HTTP_400_BAD_REQUEST,
-                }
+    authorization_parts = refresh_token.split()
+    if len(authorization_parts) != 2:
+        response_data = {
+            'result': False,
+            'message': 'Invalid Authorization header format',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
             }
-            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-        # 獲取 Token
-        _, token = authorization_parts
-        token = str(token).replace("Bearer ", '')
-        token_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+    # 獲取 Token
+    _, token = authorization_parts
+    token = str(token).replace("Bearer ", '')
     try:
-        #token = RefreshToken(refresh_token)
+        token_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         expiration_timestamp = token_payload['exp']
         expiration_datetime = datetime.fromtimestamp(expiration_timestamp)
         current_datetime = timezone.now()
@@ -734,14 +733,13 @@ def refresh_token(request):
                         }
             return Response(response_data, status=status.HTTP_200_OK)
     except TokenError:
-        pass
-    response_data = {
-        'result': False,
-        'message': 'Token is error',
-        'data': {
-            'code': status.HTTP_400_BAD_REQUEST,
+        response_data = {
+            'result': False,
+            'message': 'Token is error',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
         }
-    }
     return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 # 編輯個人資料的寄發驗證信或簡訊
 @api_view(['POST'])
