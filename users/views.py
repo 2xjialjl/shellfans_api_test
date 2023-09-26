@@ -1,7 +1,7 @@
 # users/views.py
 import random
 from datetime import timedelta
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -12,8 +12,9 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer
 import jwt
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -690,7 +691,9 @@ def get_user_info(request):
 
 # 交換token
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def refresh_token(request):
+    user = request.user
     refresh_token = request.headers.get('Authorization')
     if not refresh_token:
         response_data = {
@@ -714,24 +717,18 @@ def refresh_token(request):
 
     # 獲取 Token
     _, token = authorization_parts
-    token = str(token).replace("Bearer ", '')
     try:
-        token_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        expiration_timestamp = token_payload['exp']
-        expiration_datetime = datetime.fromtimestamp(expiration_timestamp)
-        current_datetime = timezone.now()
-        # 如果令牌剩餘時間小於一定閾值（例如5分鐘），則生成新的 JWT 令牌
-        if expiration_datetime - current_datetime < timedelta(minutes=5):
-            new_token = token.access_token
-            response_data = {
-                            'result': True,
-                            'message': 'change token successful',
-                            'data': {
-                                'code': status.HTTP_200_OK,
-                                'token': new_token
-                            }
+        refresh_token = RefreshToken.for_user(user)
+        access_token = refresh_token.access_token
+        response_data = {
+                        'result': True,
+                        'message': 'change token successful',
+                        'data': {
+                            'code': status.HTTP_200_OK,
+                            'token': access_token
                         }
-            return Response(response_data, status=status.HTTP_200_OK)
+                    }
+        return Response(response_data, status=status.HTTP_200_OK)
     except TokenError:
         response_data = {
             'result': False,
