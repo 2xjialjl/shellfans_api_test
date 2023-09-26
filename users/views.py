@@ -691,21 +691,33 @@ def get_user_info(request):
 # 交換token
 @api_view(['POST'])
 def refresh_token(request):
-    refresh_token = request.auth
+    refresh_token = request.headers.get('Authorization')
     if not refresh_token:
         response_data = {
             'result': False,
-            'message': 'Token is null',
+            'message': 'Token is missing in the headers',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
-                'refresh_token': refresh_token
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        authorization_parts = authorization_header.split()
+        if len(authorization_parts) != 2:
+            response_data = {
+                'result': False,
+                'message': 'Invalid Authorization header format',
+                'data': {
+                    'code': status.HTTP_400_BAD_REQUEST,
+                }
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
+        # 獲取 Token
+        _, token = authorization_parts
+        token = str(token).replace("Bearer ", '')
+        token_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     try:
-        token = RefreshToken(refresh_token)
-        token_payload = token.payload
+        #token = RefreshToken(refresh_token)
         expiration_timestamp = token_payload['exp']
         expiration_datetime = datetime.fromtimestamp(expiration_timestamp)
         current_datetime = timezone.now()
