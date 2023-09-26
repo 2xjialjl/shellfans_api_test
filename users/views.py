@@ -12,6 +12,8 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer
 import jwt
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -686,6 +688,48 @@ def get_user_info(request):
 
     return Response(response_data, status=status.HTTP_200_OK)
 
+# 交換token
+@api_view(['POST'])
+def refresh_token(request):
+    refresh_token = request.auth
+    if not refresh_token:
+        response_data = {
+            'result': False,
+            'message': 'Token is null',
+            'data': {
+                'code': status.HTTP_400_BAD_REQUEST,
+            }
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        token = RefreshToken(refresh_token)
+        token_payload = token.payload
+        expiration_timestamp = token_payload['exp']
+        expiration_datetime = datetime.fromtimestamp(expiration_timestamp)
+        current_datetime = timezone.now()
+        # 如果令牌剩餘時間小於一定閾值（例如5分鐘），則生成新的 JWT 令牌
+        if expiration_datetime - current_datetime < timedelta(minutes=5):
+            new_token = token.access_token
+            response_data = {
+                            'result': True,
+                            'message': 'change token successful',
+                            'data': {
+                                'code': status.HTTP_200_OK,
+                                'token': new_token
+                            }
+                        }
+            return Response(response_data, status=status.HTTP_200_OK)
+    except TokenError:
+        pass
+    response_data = {
+        'result': False,
+        'message': 'Token is error',
+        'data': {
+            'code': status.HTTP_400_BAD_REQUEST,
+        }
+    }
+    return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 # 編輯個人資料的寄發驗證信或簡訊
 @api_view(['POST'])
 def edit_profiles_sent_verification_code(request):
@@ -954,15 +998,6 @@ def edit_profiles(request):
                 response_data = {
                     'result': False,
                     'message': 'Verification code has expired',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            if User.objects.filter(backup_email=backup_email).exists():
-                response_data = {
-                    'result': False,
-                    'message': 'Email is empty',
                     'data': {
                         'code': status.HTTP_400_BAD_REQUEST,
                     }

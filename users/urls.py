@@ -14,5 +14,6 @@ urlpatterns = [
     path('get_user_info/',views.get_user_info,name='get_user_info'),
     path('edit_profiles/',views.edit_profiles,name='edit_profiles'),
     path('edit_profiles_sent_verification_code/',views.edit_profiles_sent_verification_code,name='edit_profiles_sent_verification_code'),
+    path('refresh_token/', views.refresh_token, name='refresh_token'),
     path('fb_crawler/',views.fb_crawler,name='fb_crawler'),
 ]
