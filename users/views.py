@@ -793,6 +793,7 @@ def edit_profiles_sent_verification_code(request):
                     'message': 'SMS server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        'sent_phone_number':sent_phone_number
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
