@@ -916,7 +916,7 @@ def edit_profiles(request):
             user.gender = gender
         if 'email' in request.data:
             email = request.data.get('email')
-            code = request.data.get('verification_codes')
+            code = request.data.get('verification_code')
             verification_codes = VerificationCode.objects.filter(user_code=email, code=code)
             if not verification_codes.exists():
                 # 驗證碼不存在,驗證失敗
@@ -952,7 +952,7 @@ def edit_profiles(request):
             user.email = email
         if 'backup_email' in request.data:
             backup_email = request.data.get('backup_email')
-            code = request.data.get('verification_codes')
+            code = request.data.get('verification_code')
             verification_codes = VerificationCode.objects.filter(user_code=backup_email, code=code)
             if not verification_codes.exists():
                 # 驗證碼不存在,驗證失敗
@@ -988,7 +988,7 @@ def edit_profiles(request):
             user.backup_email = backup_email
         if 'phone_number' in request.data:
             phone_number = request.data.get('phone_number')
-            code = request.data.get('verification_codes')
+            code = request.data.get('verification_code')
             verification_codes = VerificationCode.objects.filter(user_code=phone_number, code=code)
             if not verification_codes.exists():
                 # 驗證碼不存在,驗證失敗
