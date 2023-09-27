@@ -694,50 +694,59 @@ def get_user_info(request):
 @permission_classes([IsAuthenticated])
 def refresh_token(request):
     user = request.user
-    refresh_token = request.headers.get('Authorization')
-    if not refresh_token:
-        response_data = {
-            'result': False,
-            'message': 'Token is missing in the headers',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
+    response_data = {
+        'result': False,
+        'message': 'Invalid Authorization header format',
+        'data': {
+            'code': status.HTTP_400_BAD_REQUEST,
         }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    authorization_parts = refresh_token.split()
-    if len(authorization_parts) != 2:
-        response_data = {
-            'result': False,
-            'message': 'Invalid Authorization header format',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-    # 獲取 Token
-    _, token = authorization_parts
-    try:
-        refresh_token = RefreshToken.for_user(user)
-        access_token = refresh_token.access_token
-        response_data = {
-                        'result': True,
-                        'message': 'change token successful',
-                        'data': {
-                            'code': status.HTTP_200_OK,
-                            'token': access_token
-                        }
-                    }
-        return Response(response_data, status=status.HTTP_200_OK)
-    except TokenError:
-        response_data = {
-            'result': False,
-            'message': 'Token is error',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
+    }
     return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+    # user = request.user
+    # refresh_token = request.headers.get('Authorization')
+    # if not refresh_token:
+    #     response_data = {
+    #         'result': False,
+    #         'message': 'Token is missing in the headers',
+    #         'data': {
+    #             'code': status.HTTP_400_BAD_REQUEST,
+    #         }
+    #     }
+    #     return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+    # authorization_parts = refresh_token.split()
+    # if len(authorization_parts) != 2:
+    #     response_data = {
+    #         'result': False,
+    #         'message': 'Invalid Authorization header format',
+    #         'data': {
+    #             'code': status.HTTP_400_BAD_REQUEST,
+    #         }
+    #     }
+    #     return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # # 獲取 Token
+    # _, token = authorization_parts
+    # try:
+    #     refresh_token = RefreshToken.for_user(user)
+    #     access_token = refresh_token.access_token
+    #     response_data = {
+    #                     'result': True,
+    #                     'message': 'change token successful',
+    #                     'data': {
+    #                         'code': status.HTTP_200_OK,
+    #                         'token': access_token
+    #                     }
+    #                 }
+    #     return Response(response_data, status=status.HTTP_200_OK)
+    # except TokenError:
+    #     response_data = {
+    #         'result': False,
+    #         'message': 'Token is error',
+    #         'data': {
+    #             'code': status.HTTP_400_BAD_REQUEST,
+    #         }
+    #     }
+    # return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
 # 編輯個人資料的寄發驗證信或簡訊
 @api_view(['POST'])
