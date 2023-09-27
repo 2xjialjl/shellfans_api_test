@@ -738,6 +738,7 @@ def refresh_token(request):
             }
         }
     return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
 # 編輯個人資料的寄發驗證信或簡訊
 @api_view(['POST'])
 def edit_profiles_sent_verification_code(request):
@@ -1013,11 +1014,13 @@ def edit_profiles(request):
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             user.phone_number = phone_number
         security_code = request.data.get('security_code')
+        profile_picture = request.data.get('profile_picture')
         user.security_code = security_code
+        user.profile_picture = profile_picture
         user.save()
         response_data = {
             'result': True,
-            'message': 'Verification code is valid',
+            'message': 'edit_profiles is successfully',
             'data': {
                 'code': status.HTTP_200_OK,
             }

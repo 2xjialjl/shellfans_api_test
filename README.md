@@ -372,3 +372,43 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"Email server error","data":{"code":400}
       }
     ```
+## edit_profiles
+
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/edit_profiles/`
+- **HTTP Method:** POST
+- **Description:** This is to send a login verification code.
+
+### Request
+
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/edit_profiles/`
+- **you can input phone or email**
+  ```json
+  {
+    "name": "jason",
+    "gender":"0",
+    "email":"jsaiok@example.com",
+    "backup_email":"jsaiok@example.com",
+    "verification_codes":"123456",
+    "security_code":"security_code",
+    "profile_picture":"base64"
+  }
+### Responses
+- **Status Codes:
+200 OK: edit_profiles is successfully.**
+    ```json
+      {
+        "result":true,"message":"edit_profiles is successfully","data":{"code":200}
+      }
+     ```
+- **400 Bad Request: Verification code has expired.**
+    ```json
+      {
+        "result":true,"message":"Verification code has expired","data":{"code":400}
+      }
+    ```
+- **400 Bad Request: Email is empty.**
+    ```json
+      {
+        "result":true,"message":"Email is empty","data":{"code":400}
+      }
+    ```
