@@ -743,13 +743,11 @@ def refresh_token(request):
 @api_view(['POST'])
 def edit_profiles_sent_verification_code(request):
     accout = request.data.get('account')
+    phone_region = request.data.get('country_code')
     if '@' not in accout:
         # 檢查有無手機號碼
         if not User.objects.filter(phone_number=accout).exists():
-            user = User.objects.get(phone_number=accout)
-            phone_number = user.phone_number
-            country_code = user.phone_region
-            sent_phone_number = convert_country_code(phone_number, country_code)
+            sent_phone_number = convert_country_code(accout, phone_region)
             # 生成隨機的6位數驗證碼
             verification_code = str(random.randint(100000, 999999))
             # 當前時間
