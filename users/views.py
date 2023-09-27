@@ -773,7 +773,7 @@ def edit_profiles_sent_verification_code(request):
                 # 寄送驗證碼
                 response = requests.post(send_sms_url, data=post_data)
                 # 存到db
-                verification_code_db = VerificationCode(user_code=phone_number, code=verification_code, expiration_time=expiration_time)
+                verification_code_db = VerificationCode(user_code=accout, code=verification_code, expiration_time=expiration_time)
                 verification_code_db.save()
                 # 寄送簡訊的狀態
                 response.raise_for_status()
