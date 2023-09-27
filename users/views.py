@@ -793,7 +793,6 @@ def edit_profiles_sent_verification_code(request):
                     'message': 'SMS server error',
                     'data': {
                         'code': status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        'sent_phone_number':sent_phone_number
                     }
                 }
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -988,6 +987,7 @@ def edit_profiles(request):
         if 'phone_number' in request.data:
             phone_number = request.data.get('phone_number')
             code = request.data.get('verification_code')
+            country_code = request.data.get('country_code')
             verification_codes = VerificationCode.objects.filter(user_code=phone_number, code=code)
             if not verification_codes.exists():
                 # 驗證碼不存在,驗證失敗
@@ -1012,6 +1012,7 @@ def edit_profiles(request):
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             user.phone_number = phone_number
+            user.country_code = country_code
         security_code = request.data.get('security_code')
         user.security_code = security_code
         if 'profile_picture'in request.data:
