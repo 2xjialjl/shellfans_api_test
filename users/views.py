@@ -980,15 +980,6 @@ def edit_profiles(request):
                     }
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            if User.objects.filter(backup_email=backup_email).exists():
-                response_data = {
-                    'result': False,
-                    'message': 'Email is empty',
-                    'data': {
-                        'code': status.HTTP_400_BAD_REQUEST,
-                    }
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             user.backup_email = backup_email
         if 'phone_number' in request.data:
             phone_number = request.data.get('phone_number')
