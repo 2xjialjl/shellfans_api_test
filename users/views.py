@@ -740,7 +740,7 @@ def refresh_token(request):
             'message': 'Token is error',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
-                'e': e
+                'e': str(e)
             }
         }
     return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
