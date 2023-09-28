@@ -1,7 +1,7 @@
 # users/views.py
 import random
 from datetime import timedelta
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -12,7 +12,8 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer
 import jwt
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 import time
@@ -695,6 +696,7 @@ def get_user_info(request):
 
 # 交換token
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
 def refresh_token(request):
     user = request.user
     refresh_token = request.headers.get('Authorization')
