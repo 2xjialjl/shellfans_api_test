@@ -14,8 +14,7 @@ from .serializers import UserSerializer
 import jwt
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, Token
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -723,14 +722,16 @@ def refresh_token(request):
     # 獲取 Token
     _, token = authorization_parts
     try:
-        refresh_token = RefreshToken.for_user(user)
-        access_token = refresh_token.access_token
+        old_access_token = Token.objects.get(token=token)
+        user_id = old_access_token.user_id
+        refresh_token = RefreshToken.for_user(user_id)
+        new_access_token = refresh_token.access_token
         response_data = {
                         'result': True,
                         'message': 'change token successful',
                         'data': {
                             'code': status.HTTP_200_OK,
-                            'token': access_token
+                            'token': new_access_token
                         }
                     }
         return Response(response_data, status=status.HTTP_200_OK)
