@@ -722,9 +722,10 @@ def refresh_token(request):
     # 獲取 Token
     _, token = authorization_parts
     try:
-        old_access_token = Token.objects.get(token=token)
-        user_id = old_access_token.user_id
-        refresh_token = RefreshToken.for_user(user_id)
+        old_access_token = RefreshToken(token)
+        user_id = old_access_token['user_id']
+        user = User.objects.get(id=user_id)
+        refresh_token = RefreshToken.for_user(user)
         new_access_token = refresh_token.access_token
         response_data = {
                         'result': True,
