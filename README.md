@@ -413,3 +413,32 @@ Welcome to Shellfans API documentation. This document provides information about
         "result":true,"message":"Email is empty","data":{"code":400}
       }
     ```
+  ## refresh_token
+
+- **Endpoint:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/refresh_token/`
+- **HTTP Method:** POST
+- **Description:** This is to refresh_token.
+
+### Request
+
+- **URL:** `https://shellfans-api-test-rr7tb4kqva-uc.a.run.app/api/refresh_token/`
+- **you can input token**
+  ```json
+  {
+    "Authorization": "Bearer eyJhbGciOiJI",
+
+  }
+### Responses
+- **Status Codes:
+200 OK: edit_profiles is successfully.**
+    ```json
+      {
+        "result":true,"message":"Token refresh successful","data":{"code":200,"token":"eyJhbG"}
+      }
+     ```
+- **400 Bad Request: Verification code has expired.**
+    ```json
+      {
+        "result":true,"message":"Token refresh failed","data":{"code":400}
+      }
+    ```

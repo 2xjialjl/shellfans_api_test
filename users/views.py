@@ -713,13 +713,12 @@ def refresh_token(request):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-    except Exception as e:
+    except:
         response_data = {
             'result': False,
             'message': 'Token refresh failed',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
-                'error': str(e),
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
