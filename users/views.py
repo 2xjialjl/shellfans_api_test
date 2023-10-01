@@ -697,55 +697,32 @@ def get_user_info(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 def refresh_token(request):
-    user = request.user
-    refresh_token = request.headers.get('Authorization')
-    if not refresh_token:
-        response_data = {
-            'result': False,
-            'message': 'Token is missing in the headers',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    authorization_parts = refresh_token.split()
-    if len(authorization_parts) != 2:
-        response_data = {
-            'result': False,
-            'message': 'Invalid Authorization header format',
-            'data': {
-                'code': status.HTTP_400_BAD_REQUEST,
-            }
-        }
-        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-    # 獲取 Token
-    _, token = authorization_parts
     try:
-        old_access_token = RefreshToken(token)
-        user_id = old_access_token['user_id']
-        user = User.objects.get(id=user_id)
-        refresh_token = RefreshToken.for_user(user)
-        new_access_token = refresh_token.access_token
+        # 使用 SimpleJWT 提供的方法来获取 refresh token
+        refresh_token = RefreshToken(request.auth)
+        # 刷新 token
+        new_access_token = str(refresh_token.access_token)
+
         response_data = {
-                        'result': True,
-                        'message': 'change token successful',
-                        'data': {
-                            'code': status.HTTP_200_OK,
-                            'token': new_access_token
-                        }
-                    }
+            'result': True,
+            'message': 'Token refresh successful',
+            'data': {
+                'code': status.HTTP_200_OK,
+                'token': new_access_token
+            }
+        }
         return Response(response_data, status=status.HTTP_200_OK)
+
     except Exception as e:
         response_data = {
             'result': False,
-            'message': 'Token is error',
+            'message': 'Token refresh failed',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
-                'e': str(e),
+                'error': str(e),
             }
         }
-    return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
 # 編輯個人資料的寄發驗證信或簡訊
 @api_view(['POST'])
