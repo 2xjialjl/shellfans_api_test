@@ -711,7 +711,6 @@ def refresh_token(request):
             'data': {
                 'code': status.HTTP_200_OK,
                 'token': new_access_token,
-                'old_token': old_token
             }
         }
         return Response(response_data, status=status.HTTP_200_OK)
@@ -723,6 +722,7 @@ def refresh_token(request):
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
                 'error': str(e),
+                'old_token': old_token
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
