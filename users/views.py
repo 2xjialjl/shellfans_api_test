@@ -702,7 +702,9 @@ def refresh_token(request):
         decoded_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         user_id = decoded_payload.get('user_id')
         user = User.objects.get(user_id=user_id)
-        refresh_token = RefreshToken.for_user(user, user_id_field='user_id')
+        refresh_token = RefreshToken()
+        refresh_token.user = user
+        refresh_token.save()
         new_access_token = str(refresh_token.access_token)
         response_data = {
             'result': True,
