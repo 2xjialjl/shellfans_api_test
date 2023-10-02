@@ -699,33 +699,26 @@ def refresh_token(request):
     try:
         # 使用 SimpleJWT 提供的方法来獲取 refresh token
         refresh_token = RefreshToken(request.auth)
-        user_id = request.user.user_id
-        new_payload = {
-            'user_id': user_id,
-            'exp': refresh_token.payload['exp'],
-            'iat': refresh_token.payload['iat'],
-            'nbf': refresh_token.payload['nbf'],
-            'sub': refresh_token.payload['sub'],
-            'jti': refresh_token.payload['jti'],
-        }
-        new_access_token = RefreshToken(payload=new_payload).access_token
+        # 刷新 token
+        new_access_token = str(refresh_token.access_token)
+
         response_data = {
             'result': True,
             'message': 'Token refresh successful',
             'data': {
                 'code': status.HTTP_200_OK,
-                'token': str(new_access_token)
+                'token': new_access_token,
+                'refresh_token':refresh_token
             }
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-    except Exception as e:
+    except:
         response_data = {
             'result': False,
             'message': 'Token refresh failed',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
-                'error': str(e)
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
@@ -891,7 +884,7 @@ def edit_profiles(request):
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    user_id = payload.get('user_id')
+    user_id = payload.get('id')
     try:
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
