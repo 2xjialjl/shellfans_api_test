@@ -634,7 +634,7 @@ def get_user_info(request):
             }
         }
         return Response(response_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except jwt.DecodeError:
+    except Exception as e:
         # Token無效
         response_data = {
             'result': False,
@@ -642,11 +642,11 @@ def get_user_info(request):
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
                 'token':token,
-                'payload':payload
+                'error':str(e)
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    user = User.objects.filter(user_id=payload['user_id']).first()
+    user = User.objects.filter(user_id=payload.get('user_id')).first()
     if not user:
         # 找不到user
         response_data = {
