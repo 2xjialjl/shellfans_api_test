@@ -701,7 +701,7 @@ def refresh_token(request):
         _, token = authorization_header.split()
         decoded_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         user_id = decoded_payload.get('user_id')
-        user = User.objects.get(pk=user_id)
+        user = User.objects.get(user_id=user_id)
         refresh_token = RefreshToken.for_user(user)
         new_access_token = str(refresh_token.access_token)
         response_data = {
