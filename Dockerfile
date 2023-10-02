@@ -7,8 +7,6 @@ RUN apk add --no-cache mariadb-connector-c-dev build-base
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pip install mysqlclient==2.1.0
-RUN python manage.py makemigrations
-RUN python manage.py migrate
 ENV DJANGO_SETTINGS_MODULE=myproject.settings
 ENV DATABASE_URL=mysql://user:password@/database
 ENV TZ=Asia/Taipei
