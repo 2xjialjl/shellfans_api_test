@@ -703,8 +703,7 @@ def refresh_token(request):
         user_id = decoded_payload.get('user_id')
         user = User.objects.get(user_id=user_id)
         refresh_token = RefreshToken()
-        refresh_token.user = user
-        refresh_token.save()
+        refresh_token['user_id'] = user.user_id
         new_access_token = str(refresh_token.access_token)
         response_data = {
             'result': True,
