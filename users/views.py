@@ -535,6 +535,7 @@ def check_login_verification_code(request):
 def quick_registration(request):
     data = request.data
     email = data.get('email')
+
     # 檢查email是否重複
     if not User.objects.filter(email=email).exists():
         try:
@@ -568,16 +569,16 @@ def quick_registration(request):
                 }
             }
             return Response(response_data, status=status.HTTP_200_OK)
-        except Exception as e:
-                # db server error
-                response_error_data = {
-                    'result': False,
-                    'message': 'DB server error',
-                    'data': {
-                        'code': status.HTTP_500_INTERNAL_SERVER_ERROR
-                    }
+        except:
+            # db server error
+            response_error_data = {
+                'result': False,
+                'message': 'DB server error',
+                'data': {
+                    'code': status.HTTP_500_INTERNAL_SERVER_ERROR
                 }
-                return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            }
+            return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         user = get_object_or_404(User, email=email)
         user_id = user.user_id
