@@ -535,7 +535,6 @@ def check_login_verification_code(request):
 def quick_registration(request):
     data = request.data
     email = data.get('email')
-
     # 檢查email是否重複
     if not User.objects.filter(email=email).exists():
         try:
