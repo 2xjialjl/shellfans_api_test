@@ -641,6 +641,8 @@ def get_user_info(request):
             'message': 'Invalid token',
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
+                'token':token,
+                'payload':payload
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
