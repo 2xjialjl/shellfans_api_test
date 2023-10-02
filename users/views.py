@@ -697,14 +697,13 @@ def get_user_info(request):
 @authentication_classes([TokenAuthentication])
 def refresh_token(request):
     try:
-        old_token = request.auth
-        user_id = old_token.payload.get('user_id')
-        # 使用 SimpleJWT 提供的方法来獲取 refresh token
-        refresh_token = RefreshToken(old_token)
-        access_token = refresh_token.access_token
-        access_token['user_id'] = user_id
+        authorization_header = request.headers.get('Authorization')
+        _, token = authorization_header.split()
+        decoded_payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        user_id = decoded_payload.get('user_id')
+        user = User.objects.get(pk=user_id)
+        refresh_token = RefreshToken.for_user(user)
         new_access_token = str(refresh_token.access_token)
-
         response_data = {
             'result': True,
             'message': 'Token refresh successful',
