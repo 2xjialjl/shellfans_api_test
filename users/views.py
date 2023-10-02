@@ -554,8 +554,7 @@ def quick_registration(request):
                 third_party_registration_source=data.get('third_party_registration_source')
             )
             new_user.save()
-            user = get_object_or_404(User, email=email)
-            user_id = user.user_id
+            user_id = new_user.user_id
             payload = {
                 'user_id': user_id
             }
