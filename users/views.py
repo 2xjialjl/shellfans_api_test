@@ -723,8 +723,7 @@ def refresh_token(request):
                 'error': str(e),
                 'token':token,
                 'decoded_payload':decoded_payload,
-                'user':user,
-                'refresh_token':refresh_token
+                'user':user
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
