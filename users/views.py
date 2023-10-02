@@ -721,9 +721,9 @@ def refresh_token(request):
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
                 'error': str(e),
-                'token':token,
-                'decoded_payload':decoded_payload,
-                'user':user
+                'token':str(token),
+                'decoded_payload':str(decoded_payload),
+                'user':str(user)
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
