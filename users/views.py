@@ -253,7 +253,7 @@ def register_user(request):
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=phone_number).delete()
             user = get_object_or_404(User, phone_number=phone_number)
-            user_id = user.id
+            user_id = user.user_id
             payload = {
                 'id': user_id
             }
@@ -300,7 +300,7 @@ def register_user(request):
             # 刪除VerificationCode的資料
             VerificationCode.objects.filter(user_code=email).delete()
             user = get_object_or_404(User, email=email)
-            user_id = user.id
+            user_id = user.user_id
             payload = {
                 'id': user_id
             }
@@ -555,7 +555,7 @@ def quick_registration(request):
             )
             new_user.save()
             user = get_object_or_404(User, email=email)
-            user_id = user.id
+            user_id = user.user_id
             payload = {
                 'user_id': user_id
             }
