@@ -153,6 +153,8 @@ CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']  # 允許的HTTP標頭
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': 'secret',
 }
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
