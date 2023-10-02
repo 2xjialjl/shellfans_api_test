@@ -699,15 +699,22 @@ def refresh_token(request):
     try:
         # 使用 SimpleJWT 提供的方法来獲取 refresh token
         refresh_token = RefreshToken(request.auth)
-        # 刷新 token
-        new_access_token = str(refresh_token.access_token)
-
+        user_id = request.user.user_id
+        new_payload = {
+            'user_id': user_id,
+            'exp': refresh_token.payload['exp'],
+            'iat': refresh_token.payload['iat'],
+            'nbf': refresh_token.payload['nbf'],
+            'sub': refresh_token.payload['sub'],
+            'jti': refresh_token.payload['jti'],
+        }
+        new_access_token = RefreshToken(payload=new_payload).access_token
         response_data = {
             'result': True,
             'message': 'Token refresh successful',
             'data': {
                 'code': status.HTTP_200_OK,
-                'token': new_access_token
+                'token': str(new_access_token)
             }
         }
         return Response(response_data, status=status.HTTP_200_OK)
