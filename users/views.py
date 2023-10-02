@@ -699,6 +699,7 @@ def refresh_token(request):
     try:
         old_token = request.auth
         user_id = old_token.payload.get('user_id')
+        return Response(user_id, status=status.HTTP_200_OK)
         # 使用 SimpleJWT 提供的方法来獲取 refresh token
         refresh_token = RefreshToken(old_token)
         access_token = refresh_token.access_token
@@ -722,8 +723,6 @@ def refresh_token(request):
             'data': {
                 'code': status.HTTP_400_BAD_REQUEST,
                 'error': str(e),
-                'user_id': user_id,
-                'old_token':old_token
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
