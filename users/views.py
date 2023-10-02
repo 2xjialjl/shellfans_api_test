@@ -470,9 +470,9 @@ def check_login_verification_code(request):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         user = get_object_or_404(User, phone_number=accout)
-        user_id = user.id
+        user_id = user.user_id
         payload = {
-            'id': user_id
+            'user_id': user_id
         }
         token = jwt.encode(payload, 'secret', algorithm='HS256')
         response_data = {
@@ -513,11 +513,11 @@ def check_login_verification_code(request):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         user = get_object_or_404(User, email=accout)
-        user_id = user.id
+        user_id = user.user_id
         payload = {
-            'id': user_id
+            'user_id': user_id
         }
-        token = jwt.encode(payload,'secret', algorithm='HS256')
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
         response_data = {
             'result': True,
             'message': 'Verification code is valid',
@@ -557,7 +557,7 @@ def quick_registration(request):
             user = get_object_or_404(User, email=email)
             user_id = user.id
             payload = {
-                'id': user_id
+                'user_id': user_id
             }
             token = jwt.encode(payload, 'secret', algorithm='HS256')
             response_data = {
@@ -581,9 +581,9 @@ def quick_registration(request):
                 return Response(response_error_data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         user = get_object_or_404(User, email=email)
-        user_id = user.id
+        user_id = user.user_id
         payload = {
-            'id': user_id
+            'user_id': user_id
         }
         token = jwt.encode(payload, 'secret', algorithm='HS256')
         response_data = {
@@ -645,7 +645,7 @@ def get_user_info(request):
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    user = User.objects.filter(id=payload['id']).first()
+    user = User.objects.filter(user_id=payload['user_id']).first()
     if not user:
         # 找不到user
         response_data = {
@@ -698,7 +698,7 @@ def get_user_info(request):
 @authentication_classes([TokenAuthentication])
 def refresh_token(request):
     try:
-        # 使用 SimpleJWT 提供的方法来获取 refresh token
+        # 使用 SimpleJWT 提供的方法来獲取 refresh token
         refresh_token = RefreshToken(request.auth)
         # 刷新 token
         new_access_token = str(refresh_token.access_token)
