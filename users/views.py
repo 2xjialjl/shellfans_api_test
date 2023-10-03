@@ -890,7 +890,7 @@ def edit_profiles(request):
             }
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-    user_id = payload.get('id')
+    user_id = payload.get('user_id')
     try:
         user = User.objects.get(user_id=user_id)
     except Exception as e:
