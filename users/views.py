@@ -892,7 +892,7 @@ def edit_profiles(request):
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
     user_id = payload.get('id')
     try:
-        user = User.objects.get(pk=user_id)
+        user = User.objects.get(user_id=user_id)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'PUT':
