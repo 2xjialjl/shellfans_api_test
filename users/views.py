@@ -938,6 +938,7 @@ def edit_profiles(request):
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             user.email = email
+            user.is_email_verified = '1'
         if 'backup_email' in request.data:
             backup_email = request.data.get('backup_email')
             code = request.data.get('verification_code')
@@ -965,6 +966,7 @@ def edit_profiles(request):
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             user.backup_email = backup_email
+            user.is_backup_email_verified = '1'
         if 'phone_number' in request.data:
             phone_number = request.data.get('phone_number')
             code = request.data.get('verification_code')
@@ -994,6 +996,7 @@ def edit_profiles(request):
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
             user.phone_number = phone_number
             user.country_code = country_code
+            user.is_phone_verified = '1'
         security_code = request.data.get('security_code')
         user.security_code = security_code
         if 'profile_picture'in request.data:
